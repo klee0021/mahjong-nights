@@ -997,7 +997,7 @@ return (
     <h2 className="mb-4 text-2xl font-semibold">
       Step 4: Point Calculation
     </h2>
-<div className="mb-6 rounded border p-4">
+<div className="mb-6">
   <h3 className="mb-4 font-semibold">
     Score Breakdown
   </h3>
