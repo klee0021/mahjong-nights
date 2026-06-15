@@ -77,7 +77,7 @@ export default async function HistoryPage({
 </div>
 <div className="mt-2 flex justify-between">
   <strong>
-    Win Type
+    Winning Tile
   </strong>
 
   <span>
