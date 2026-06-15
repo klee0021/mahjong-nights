@@ -41,15 +41,15 @@ export default async function HistoryPage({
       </h1>
 
       {games?.length ? (
-        <div className="divide-y rounded border bg-white">
+        <div className="space-y-4">
           {games.map(
   (
     game: any,
     index: number
   ) => (
-    <div
+   <div
   key={game.id}
-  className="p-4"
+  className="rounded-lg border bg-white p-4 shadow"
 >
   <h2 className="mb-4 text-lg font-semibold">
     Hand #{games.length - index}

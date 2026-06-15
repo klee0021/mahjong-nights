@@ -3,10 +3,23 @@ import { supabase } from "@/src/lib/supabase";
 import { addSession } from "./actions/addSession";
 
 export default async function SessionsPage() {
-  const { data: sessions } = await supabase
+  const { data: openSessions } =
+  await supabase
     .from("sessions")
     .select("*")
-    .order("created_at", { ascending: false });
+    .eq("is_active", true)
+    .order("created_at", {
+      ascending: false,
+    });
+
+const { data: closedSessions } =
+  await supabase
+    .from("sessions")
+    .select("*")
+    .eq("is_active", false)
+    .order("created_at", {
+      ascending: false,
+    });
 
   return (
     <main className="min-h-screen p-8">
@@ -32,17 +45,65 @@ export default async function SessionsPage() {
         </button>
       </form>
 
-      <div className="space-y-3">
-        {sessions?.map((session) => (
-          <Link
-            key={session.id}
-            href={`/sessions/${session.id}`}
-            className="block rounded-lg border bg-white p-4 shadow hover:bg-slate-50"
-          >
-            {session.name} →
-          </Link>
-        ))}
-      </div>
+      <div className="mb-8">
+  <h2 className="mb-4 text-2xl font-semibold">
+    Open Sessions
+  </h2>
+
+  <div className="space-y-3">
+    {openSessions?.length ? (
+      openSessions.map((session) => (
+        <Link
+          key={session.id}
+          href={`/sessions/${session.id}`}
+          className="block rounded-lg border bg-white p-4 shadow hover:bg-slate-50"
+        >
+          <p className="font-medium">
+            {session.name}
+          </p>
+
+          <p className="text-sm text-gray-500">
+            {new Date(
+              session.created_at
+            ).toLocaleDateString()}
+          </p>
+        </Link>
+      ))
+    ) : (
+      <p>No open sessions.</p>
+    )}
+  </div>
+</div>
+
+<div>
+  <h2 className="mb-4 text-2xl font-semibold">
+    Closed Sessions
+  </h2>
+
+  <div className="space-y-3">
+    {closedSessions?.length ? (
+      closedSessions.map((session) => (
+        <Link
+          key={session.id}
+          href={`/sessions/${session.id}`}
+          className="block rounded-lg border bg-white p-4 shadow hover:bg-slate-50"
+        >
+          <p className="font-medium">
+            {session.name}
+          </p>
+
+          <p className="text-sm text-gray-500">
+            {new Date(
+              session.created_at
+            ).toLocaleDateString()}
+          </p>
+        </Link>
+      ))
+    ) : (
+      <p>No closed sessions.</p>
+    )}
+  </div>
+</div>
     </main>
   );
 }

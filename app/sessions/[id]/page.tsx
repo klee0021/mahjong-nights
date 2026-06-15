@@ -2,6 +2,10 @@ import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
 import { addParticipant } from "./actions/addParticipant";
 import { removeParticipant } from "./actions/removeParticipant";
+import { endSession } from "./actions/endSession";
+import { renameSession } from "./actions/renameSession";
+import EndSessionButton from "./EndSessionButton";
+import InlineRenameSession from "./InlineRenameSession";
 
 type Props = {
   params: Promise<{
@@ -87,20 +91,16 @@ const addParticipantWithSession =
 
   return (
     <main className="min-h-screen p-8">
-      <h1 className="mb-2 text-4xl font-bold">
-        {session?.name}
-      </h1>
-
-      <p className="mb-8 text-gray-600">
-        Session Dashboard
-      </p>
+      <h1 className="mb-6 text-4xl font-bold">
+  {session?.name}
+</h1>
 
       <div className="mb-6 rounded-lg border bg-white p-6 shadow">
         <h2 className="mb-4 text-2xl font-semibold">
           Dashboard
         </h2>
 
-        <div className="space-y-2">
+ <div className="space-y-2">
           <p>
             Participants: {participants?.length ?? 0}
           </p>
@@ -111,19 +111,31 @@ const addParticipantWithSession =
         </div>
 
         <div className="mt-4 flex gap-2">
+  {session?.is_active && (
   <Link
     href={`/sessions/${id}/record-game`}
     className="rounded border px-4 py-2"
   >
     Record Game
   </Link>
+)}
 
   <Link
-    href={`/sessions/${id}/history`}
-    className="rounded border px-4 py-2"
-  >
-    Hand History
-  </Link>
+  href={`/sessions/${id}/history`}
+  className="rounded border px-4 py-2"
+>
+  Hand History
+</Link>
+
+{session?.is_active && (
+  <InlineRenameSession
+    sessionName={session.name}
+    action={renameSession.bind(
+      null,
+      id
+    )}
+  />
+)}
 </div>
       </div>
 
@@ -165,10 +177,11 @@ const addParticipantWithSession =
           Participants ({participants?.length ?? 0})
         </h2>
 
-        <form
-          action={addParticipantWithSession}
-          className="mb-6 flex gap-2"
-        >
+        {session?.is_active && (
+  <form
+    action={addParticipantWithSession}
+    className="mb-6 flex gap-2"
+  >
           <select
             name="playerId"
             className="rounded border px-3 py-2"
@@ -194,6 +207,7 @@ const addParticipantWithSession =
             Add Player
           </button>
         </form>
+)}
 
         <div className="divide-y">
           {participants?.length ? (
@@ -214,14 +228,16 @@ const addParticipantWithSession =
                     {participant.players?.name}
                   </span>
 
-                  <form action={removeWithSession}>
-                    <button
-  type="submit"
-  className="text-sm text-gray-500 hover:text-black"
->
-  ✕
-</button>
-                  </form>
+                  {session?.is_active && (
+  <form action={removeWithSession}>
+    <button
+      type="submit"
+      className="text-sm text-gray-500 hover:text-black"
+    >
+      ✕
+    </button>
+  </form>
+)}
                 </div>
               );
             })
@@ -229,7 +245,20 @@ const addParticipantWithSession =
             <p>No participants yet.</p>
           )}
         </div>
-      </div>
+            </div>
+
+     {session?.is_active && (
+  <div className="mt-6 flex justify-center">
+    <form
+      action={endSession.bind(
+        null,
+        id
+      )}
+    >
+      <EndSessionButton />
+    </form>
+  </div>
+)}
     </main>
   );
 }

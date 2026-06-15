@@ -47,6 +47,47 @@ export async function saveGame({
     error.message
   );
 }
+const settlement =
+  handData.settlement ?? [];
 
-  revalidatePath(`/sessions/${sessionId}`);
+for (const result of settlement) {
+  const { data: player } =
+    await supabase
+      .from("players")
+      .select("*")
+      .eq("name", result.player)
+      .single();
+
+  if (!player) continue;
+
+  await supabase
+    .from("players")
+    .update({
+      total_score:
+        (player.total_score ?? 0) +
+        result.points,
+    })
+    .eq("id", player.id);
+}
+
+const { data: winner } =
+  await supabase
+    .from("players")
+    .select("*")
+    .eq("id", winnerId)
+    .single();
+
+if (winner) {
+  await supabase
+    .from("players")
+    .update({
+      wins:
+        (winner.wins ?? 0) + 1,
+    })
+    .eq("id", winnerId);
+}
+
+revalidatePath(
+  `/sessions/${sessionId}`
+);
 }
