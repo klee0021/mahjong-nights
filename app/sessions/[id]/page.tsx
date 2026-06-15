@@ -91,9 +91,21 @@ const addParticipantWithSession =
 
   return (
     <main className="min-h-screen p-8">
-      <h1 className="mb-6 text-4xl font-bold">
-  {session?.name}
-</h1>
+      <div className="mb-6">
+  {session?.is_active ? (
+    <InlineRenameSession
+      sessionName={session.name}
+      action={renameSession.bind(
+        null,
+        id
+      )}
+    />
+  ) : (
+    <h1 className="text-4xl font-bold">
+      {session?.name}
+    </h1>
+  )}
+</div>
 
       <div className="mb-6 rounded-lg border bg-white p-6 shadow">
         <h2 className="mb-4 text-2xl font-semibold">
@@ -127,15 +139,6 @@ const addParticipantWithSession =
   Hand History
 </Link>
 
-{session?.is_active && (
-  <InlineRenameSession
-    sessionName={session.name}
-    action={renameSession.bind(
-      null,
-      id
-    )}
-  />
-)}
 </div>
       </div>
 
