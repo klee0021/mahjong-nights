@@ -64,8 +64,8 @@ const { data: closedSessions } =
 
           <p className="text-sm text-gray-500">
             {new Date(
-              session.created_at
-            ).toLocaleDateString()}
+  session.created_at
+).toLocaleDateString("en-GB")}
           </p>
         </Link>
       ))
@@ -95,7 +95,7 @@ const { data: closedSessions } =
           <p className="text-sm text-gray-500">
             {new Date(
               session.created_at
-            ).toLocaleDateString()}
+            ).toLocaleDateString("en-GB")}
           </p>
         </Link>
       ))
