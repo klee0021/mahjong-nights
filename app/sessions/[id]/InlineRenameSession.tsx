@@ -1,6 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import {
+  useRef,
+  useState,
+} from "react";
+import {
+  Check,
+  Pencil,
+} from "lucide-react";
 
 type Props = {
   sessionName: string;
@@ -12,7 +19,12 @@ export default function InlineRenameSession({
   action,
 }: Props) {
   const [editing, setEditing] =
-    useState(false);
+  useState(false);
+
+const inputRef =
+  useRef<HTMLInputElement>(
+    null
+  );
 
   if (!editing) {
   return (
@@ -23,49 +35,50 @@ export default function InlineRenameSession({
 
       <button
   type="button"
-  onClick={() =>
-    setEditing(true)
-  }
-  className="text-2xl text-gray-500 hover:text-black"
+  onClick={() => {
+    setEditing(true);
+
+    setTimeout(() => {
+      inputRef.current?.select();
+    }, 0);
+  }}
+  className="text-gray-500 hover:text-black"
   aria-label="Rename Session"
   title="Rename Session"
 >
-  ✏️
+  <Pencil size={18} />
 </button>
     </div>
   );
 }
 
   return (
-    <form
-      action={action}
-      className="mt-2 flex flex-col gap-2"
+  <form
+    action={action}
+    className="mt-2 flex items-center gap-3"
+  >
+    <input
+      ref={inputRef}
+      name="name"
+      defaultValue={sessionName}
+      className="w-full bg-transparent px-0 text-4xl font-bold outline-none"
+      autoFocus
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          setEditing(false);
+        }
+      }}
+    />
+
+    <button
+      type="submit"
+      className="text-gray-500 hover:text-black"
+      aria-label="Save Session Name"
+      title="Save Session Name"
     >
-      <input
-        name="name"
-        defaultValue={sessionName}
-        className="w-full rounded border px-3 py-2 text-4xl font-bold"
-        autoFocus
-      />
-
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          className="rounded border px-4 py-2"
-        >
-          Save
-        </button>
-
-        <button
-          type="button"
-          onClick={() =>
-            setEditing(false)
-          }
-          className="rounded border px-4 py-2"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
+      <Check size={20} />
+    </button>
+  </form>
   );
 }
