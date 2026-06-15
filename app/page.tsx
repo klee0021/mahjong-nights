@@ -51,8 +51,8 @@ const { data: players } =
 
             <p className="text-sm text-gray-500">
               {new Date(
-                session.created_at
-              ).toLocaleDateString()}
+  session.created_at
+).toLocaleDateString("en-GB")}
             </p>
           </div>
         )
