@@ -89,6 +89,18 @@ const leaderboardRows =
 const addParticipantWithSession =
     addParticipant.bind(null, id);
 
+function hasPlayedGame(
+  playerName: string
+) {
+  return games?.some(
+    (game: any) =>
+      game.hand_data?.settlement?.some(
+        (entry: any) =>
+          entry.player === playerName
+      )
+  );
+}
+
   return (
     <main className="min-h-screen p-8">
       <div className="mb-6">
@@ -231,7 +243,10 @@ const addParticipantWithSession =
                     {participant.players?.name}
                   </span>
 
-                  {session?.is_active && (
+                  {session?.is_active &&
+ !hasPlayedGame(
+   participant.players?.name
+ ) && (
   <form action={removeWithSession}>
     <button
       type="submit"
