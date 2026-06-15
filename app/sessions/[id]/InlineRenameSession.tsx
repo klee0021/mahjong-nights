@@ -30,14 +30,14 @@ export default function InlineRenameSession({
 
   return (
     <form
-      action={action}
-      className="flex gap-2"
-    >
+  action={action}
+  className="flex flex-col gap-2 md:flex-row"
+>
       <input
-        name="name"
-        defaultValue={sessionName}
-        className="rounded border px-3 py-2"
-      />
+  name="name"
+  defaultValue={sessionName}
+  className="w-full rounded border px-3 py-2 md:w-auto"
+/>
 
       <button
         type="submit"
