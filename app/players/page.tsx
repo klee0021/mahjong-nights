@@ -1,6 +1,7 @@
 import { supabase } from "@/src/lib/supabase";
 import { addPlayer } from "./actions/addPlayer";
 import { deletePlayer } from "./actions/deletePlayer";
+import { recalculateStats } from "./actions/recalculateStats";
 
 export default async function PlayersPage() {
   const { data: players } = await supabase
@@ -10,9 +11,20 @@ export default async function PlayersPage() {
 
   return (
     <main className="min-h-screen p-8">
-      <h1 className="mb-6 text-4xl font-bold">
-        Players
-      </h1>
+      <div className="mb-6 flex items-center gap-4">
+  <h1 className="text-4xl font-bold">
+    Players
+  </h1>
+
+  <form action={recalculateStats}>
+    <button
+      type="submit"
+      className="rounded border px-4 py-2"
+    >
+      Recalculate Stats
+    </button>
+  </form>
+</div>
 
       <form
         action={addPlayer}

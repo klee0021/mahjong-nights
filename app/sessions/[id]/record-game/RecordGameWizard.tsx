@@ -24,6 +24,8 @@ export default function RecordGameWizard({
 }: Props) {
 const router = useRouter();
 const [step, setStep] = useState(1);
+const [isSaving, setIsSaving] =
+  useState(false);
 
 const [selectedPlayers, setSelectedPlayers] =
 useState<string[]>([]);
@@ -1106,13 +1108,20 @@ return (
         Back
       </button>
 
-      <button
+     <button
+  disabled={isSaving}
   onClick={async () => {
     console.log(
       "SAVE BUTTON CLICKED"
     );
 
-    try {
+    if (isSaving) {
+  return;
+}
+
+setIsSaving(true);
+
+try {
   await saveGame({
   sessionId,
   winnerId: winner,
@@ -1155,12 +1164,16 @@ return (
 } catch (error) {
   console.error(error);
 
-  alert("Save Failed");
+  setIsSaving(false);
+
+alert("Save Failed");
 }
   }}
-  className="rounded bg-black px-4 py-2 text-white"
+  className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
 >
-  Save & Update Leaderboard
+  {isSaving
+  ? "Saving..."
+  : "Save & Update Leaderboard"}
 </button>
     </div>
   </div>

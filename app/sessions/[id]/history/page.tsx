@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
+import { deleteGame } from "../actions/deleteGame";
 
 type Props = {
   params: Promise<{
@@ -7,23 +8,29 @@ type Props = {
   }>;
 };
 
+export const dynamic = "force-dynamic";
 export default async function HistoryPage({
   params,
 }: Props) {
   const { id } = await params;
 
   const { data: games } = await supabase
-  .from("games")
-  .select(`
-    *,
-    players:winner_id (
-      name
-    )
-  `)
-  .eq("session_id", id)
-  .order("created_at", {
-    ascending: false,
-  });
+    .from("games")
+    .select(`
+      *,
+      players:winner_id (
+        name
+      )
+    `)
+    .eq("session_id", id)
+    .order("created_at", {
+      ascending: false,
+    });
+
+console.log(
+  "HISTORY PAGE GAMES:",
+  games?.map((g: any) => g.id)
+);
 
   return (
     <main className="min-h-screen p-8">
@@ -43,102 +50,121 @@ export default async function HistoryPage({
       {games?.length ? (
         <div className="space-y-4">
           {games.map(
-  (
-    game: any,
-    index: number
-  ) => (
-   <div
-  key={game.id}
-  className="rounded-lg border bg-white p-4 shadow"
->
-  <h2 className="mb-4 text-lg font-semibold">
+            (
+              game: any,
+              index: number
+            ) => (
+              <div
+                key={game.id}
+                className="rounded-lg border bg-white p-4 shadow"
+              >
+                <div className="mb-4 flex items-center justify-between">
+  <h2 className="text-lg font-semibold">
     Hand #{games.length - index}
   </h2>
 
-  <div className="flex justify-between">
-  <strong>
-    Winner
-  </strong>
-
-  <span>
-    {game.players?.name ??
-      game.winner_id}
-  </span>
+  <form
+    action={deleteGame.bind(
+      null,
+      id,
+      game.id
+    )}
+  >
+    <button
+      type="submit"
+      className="text-sm text-red-600 hover:text-red-800"
+    >
+      Delete
+    </button>
+  </form>
 </div>
 
-<div className="mt-2 flex justify-between">
-  <strong>
-    Score
-  </strong>
+                <div className="flex justify-between">
+                  <strong>
+                    Winner
+                  </strong>
 
-  <span>
-    {game.score}
-  </span>
-</div>
-<div className="mt-2 flex justify-between">
-  <strong>
-    Winning Tile
-  </strong>
+                  <span>
+                    {game.players?.name ??
+                      game.winner_id}
+                  </span>
+                </div>
 
-  <span>
-    {game.hand_data?.winType ===
-    "self-draw"
-      ? "Self-Draw"
-      : `Claimed from ${game.hand_data?.discarder}`}
-  </span>
-</div>
+                <div className="mt-2 flex justify-between">
+                  <strong>
+                    Score
+                  </strong>
 
-<div className="mt-4 text-3xl leading-relaxed">
-  {[
-    game.hand_data?.meld1Tiles?.join(
-      " "
-    ),
-    game.hand_data?.meld2Tiles?.join(
-      " "
-    ),
-    game.hand_data?.meld3Tiles?.join(
-      " "
-    ),
-    game.hand_data?.meld4Tiles?.join(
-      " "
-    ),
-    game.hand_data?.pairTiles?.join(
-      " "
-    ),
-  ].join("   ")}
-</div>
+                  <span>
+                    {game.score}
+                  </span>
+                </div>
 
-              {game.hand_data?.settlement
-  ?.length > 0 && (
-  <div className="mt-4">
-    <div className="mb-2 font-semibold">
-      Settlement
-    </div>
+                <div className="mt-2 flex justify-between">
+                  <strong>
+                    Winning Tile
+                  </strong>
 
-    <div className="divide-y">
-      {game.hand_data.settlement.map(
-        (entry: any) => (
-          <div
-            key={entry.player}
-            className="flex justify-between py-1"
-          >
-            <span>
-              {entry.player}
-            </span>
+                  <span>
+                    {game.hand_data?.winType ===
+                    "self-draw"
+                      ? "Self-Draw"
+                      : `Claimed from ${game.hand_data?.discarder}`}
+                  </span>
+                </div>
 
-            <span>
-              {entry.points > 0
-                ? `+${entry.points}`
-                : entry.points}
-            </span>
-          </div>
-        )
-      )}
-    </div>
-  </div>
-)}
-            </div>
-          ))}
+                <div className="mt-4 text-3xl leading-relaxed">
+                  {[
+                    game.hand_data?.meld1Tiles?.join(
+                      " "
+                    ),
+                    game.hand_data?.meld2Tiles?.join(
+                      " "
+                    ),
+                    game.hand_data?.meld3Tiles?.join(
+                      " "
+                    ),
+                    game.hand_data?.meld4Tiles?.join(
+                      " "
+                    ),
+                    game.hand_data?.pairTiles?.join(
+                      " "
+                    ),
+                  ].join("   ")}
+                </div>
+
+                {game.hand_data?.settlement
+                  ?.length > 0 && (
+                  <div className="mt-4">
+                    <div className="mb-2 font-semibold">
+                      Settlement
+                    </div>
+
+                    <div className="divide-y">
+                      {game.hand_data.settlement.map(
+                        (entry: any) => (
+                          <div
+                            key={entry.player}
+                            className="flex justify-between py-1"
+                          >
+                            <span>
+                              {entry.player}
+                            </span>
+
+                            <span>
+                              {entry.points > 0
+                                ? `+${entry.points}`
+                                : entry.points}
+                            </span>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          )}
         </div>
       ) : (
         <p>

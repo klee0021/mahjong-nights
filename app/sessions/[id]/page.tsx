@@ -3,6 +3,7 @@ import { supabase } from "@/src/lib/supabase";
 import { addParticipant } from "./actions/addParticipant";
 import { removeParticipant } from "./actions/removeParticipant";
 import { endSession } from "./actions/endSession";
+import { deleteSession } from "./actions/deleteSession";
 import { renameSession } from "./actions/renameSession";
 import EndSessionButton from "./EndSessionButton";
 import InlineRenameSession from "./InlineRenameSession";
@@ -265,8 +266,8 @@ function hasPlayedGame(
         </div>
             </div>
 
-     {session?.is_active && (
-  <div className="mt-6 flex justify-center">
+     <div className="mt-6 flex justify-center">
+  {session?.is_active ? (
     <form
       action={endSession.bind(
         null,
@@ -275,8 +276,22 @@ function hasPlayedGame(
     >
       <EndSessionButton />
     </form>
-  </div>
-)}
+  ) : (
+    <form
+  action={deleteSession.bind(
+    null,
+    id
+  )}
+>
+      <button
+        type="submit"
+        className="rounded border border-red-500 px-4 py-2 text-red-600"
+      >
+        Delete Session
+      </button>
+    </form>
+  )}
+</div>
     </main>
   );
 }
