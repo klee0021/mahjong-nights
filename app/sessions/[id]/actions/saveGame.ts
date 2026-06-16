@@ -87,6 +87,7 @@ if (winner) {
     .eq("id", winnerId);
 }
 
+revalidatePath("/");
 revalidatePath(
   `/sessions/${sessionId}`
 );
