@@ -7,6 +7,7 @@ import { deleteSession } from "./actions/deleteSession";
 import { renameSession } from "./actions/renameSession";
 import EndSessionButton from "./EndSessionButton";
 import InlineRenameSession from "./InlineRenameSession";
+import DeleteSessionButton from "@/src/components/DeleteSessionButton";
 
 type Props = {
   params: Promise<{
@@ -283,13 +284,8 @@ function hasPlayedGame(
     id
   )}
 >
-      <button
-        type="submit"
-        className="rounded border border-red-500 px-4 py-2 text-red-600"
-      >
-        Delete Session
-      </button>
-    </form>
+  <DeleteSessionButton />
+</form>
   )}
 </div>
     </main>

@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { saveGame } from "../actions/saveGame";
+import { updateGame } from "../actions/updateGame";
 import MeldEditor from "@/src/components/MeldEditor";
+import { recalculateStats } from "@/app/players/actions/recalculateStats";
 
 type Participant = {
 player_id: string;
@@ -16,24 +18,38 @@ name: string;
 type Props = {
   sessionId: string;
   participants: Participant[];
+  initialGame?: any;
 };
 
 export default function RecordGameWizard({
   sessionId,
   participants,
+  initialGame,
 }: Props) {
 const router = useRouter();
-const [step, setStep] = useState(1);
+const [step, setStep] = useState(
+  initialGame ? 3 : 1
+);
 const [isSaving, setIsSaving] =
   useState(false);
 
 const [selectedPlayers, setSelectedPlayers] =
-useState<string[]>([]);
+  useState<string[]>(
+    initialGame
+      ? participants.map(
+          (p) => p.player_id
+        )
+      : []
+  );
 
 const [winner, setWinner] =
-useState("");
+  useState(
+    initialGame?.winner_id ?? ""
+  );
 const [flowers, setFlowers] =
-  useState(0);
+  useState(
+    initialGame?.flowers ?? 0
+  );
 
 const [melds] = useState([
 null,
@@ -47,42 +63,84 @@ const [editingSection, setEditingSection] =
   useState<string | null>(null);
 
 const [meld1Tiles, setMeld1Tiles] =
-  useState<string[]>([]);
+  useState<string[]>(
+    initialGame?.hand_data
+      ?.meld1Tiles ?? []
+  );
 
 const [meld2Tiles, setMeld2Tiles] =
-  useState<string[]>([]);
+  useState<string[]>(
+    initialGame?.hand_data
+      ?.meld2Tiles ?? []
+  );
 
 const [meld3Tiles, setMeld3Tiles] =
-  useState<string[]>([]);
+  useState<string[]>(
+    initialGame?.hand_data
+      ?.meld3Tiles ?? []
+  );
 
 const [meld4Tiles, setMeld4Tiles] =
-  useState<string[]>([]);
+  useState<string[]>(
+    initialGame?.hand_data
+      ?.meld4Tiles ?? []
+  );
 
 const [meld1Source, setMeld1Source] =
-  useState("self-draw");
+  useState(
+    initialGame?.hand_data
+      ?.meld1Source ??
+      "self-draw"
+  );
 
 const [meld2Source, setMeld2Source] =
-  useState("self-draw");
+  useState(
+    initialGame?.hand_data
+      ?.meld2Source ??
+      "self-draw"
+  );
 
 const [meld3Source, setMeld3Source] =
-  useState("self-draw");
+  useState(
+    initialGame?.hand_data
+      ?.meld3Source ??
+      "self-draw"
+  );
 
 const [meld4Source, setMeld4Source] =
-  useState("self-draw");
+  useState(
+    initialGame?.hand_data
+      ?.meld4Source ??
+      "self-draw"
+  );
 
 const [pairSource, setPairSource] =
-  useState("self-draw");
+  useState(
+    initialGame?.hand_data
+      ?.pairSource ??
+      "self-draw"
+  );
 
 const [pairTiles, setPairTiles] =
-  useState<string[]>([]);
+  useState<string[]>(
+    initialGame?.hand_data
+      ?.pairTiles ?? []
+  );
 
 const [winType, setWinType] =
   useState<
     "self-draw" | "claimed"
-  >("self-draw");
+  >(
+    initialGame?.hand_data
+      ?.winType ??
+      "self-draw"
+  );
 
 const [discarder, setDiscarder] =
-  useState("");
+  useState(
+    initialGame?.hand_data
+      ?.discarder ?? ""
+  );
 
 function togglePlayer(playerId: string) {
 setSelectedPlayers((current) => {
@@ -115,6 +173,36 @@ const selectedParticipants =
         b.players.name
       )
     );
+console.log(
+  "HAND PLAYERS:",
+  initialGame?.hand_data?.settlement?.map(
+    (s: any) => s.player
+  )
+);
+
+console.log(
+  "SELECTED PLAYER IDS:",
+  selectedPlayers
+);
+
+console.log(
+  "SELECTED PARTICIPANTS:",
+  selectedParticipants.map(
+    (p) => p.players.name
+  )
+);
+
+console.log(
+  "SELECTED PLAYERS IDS:",
+  selectedPlayers
+);
+
+console.log(
+  "SELECTED PARTICIPANTS:",
+  selectedParticipants.map(
+    (p) => p.players.name
+  )
+);
 
 const otherPlayers =
   selectedParticipants
@@ -444,13 +532,16 @@ const settlement =
 return (
   <main className="min-h-screen p-8">
     <h1 className="mb-2 text-4xl font-bold">
-      Record Game
-    </h1>
+  {initialGame
+    ? "Edit Hand"
+    : "Record Game"}
+</h1>
 
-
-  <p className="mb-6 text-gray-600">
-    Step {step} of 4
-  </p>
+<p className="mb-6 text-gray-600">
+  {initialGame
+    ? `Step ${step - 2} of 2`
+    : `Step ${step} of 4`}
+</p>
 
   {step === 1 && (
     <div className="rounded-lg border bg-white p-6 shadow">
@@ -494,15 +585,17 @@ return (
         ))}
       </div>
 
-      <button
-        disabled={
-          selectedPlayers.length !== 4
-        }
-        onClick={() => setStep(2)}
-        className="mt-6 rounded border px-4 py-2 disabled:opacity-50"
-      >
-        Next
-      </button>
+      <div className="mt-6 flex gap-2">
+  <button
+    disabled={
+      selectedPlayers.length !== 4
+    }
+    onClick={() => setStep(2)}
+    className="rounded border px-4 py-2 disabled:opacity-50"
+  >
+    Next
+  </button>
+</div>
     </div>
   )}
 
@@ -570,8 +663,10 @@ return (
   {step === 3 && !editingSection && (
   <div className="rounded-lg border bg-white p-6 shadow">
     <h2 className="mb-4 text-2xl font-semibold">
-      Step 3: Winning Hand
-    </h2>
+  {initialGame
+    ? "Step 1: Edit Hand"
+    : "Step 3: Winning Hand"}
+</h2>
 
 
 <div className="mb-4 rounded border p-4">
@@ -814,22 +909,24 @@ return (
       : "❌ Hand Invalid"}
   </p>
 
-  <div className="flex gap-2">
+ <div className="flex gap-2">
+  {!initialGame && (
     <button
       onClick={() => setStep(2)}
       className="rounded border px-4 py-2"
     >
       Back
     </button>
+  )}
 
-    <button
-  disabled={!handValid}
-  onClick={() => setStep(4)}
-  className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
->
-  Calculate Points
-</button>
-  </div>
+  <button
+    disabled={!handValid}
+    onClick={() => setStep(4)}
+    className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+  >
+    Calculate Points
+  </button>
+</div>
 </div>
 
     </div>
@@ -997,8 +1094,10 @@ return (
 {step === 4 && (
   <div className="rounded-lg border bg-white p-6 shadow">
     <h2 className="mb-4 text-2xl font-semibold">
-      Step 4: Point Calculation
-    </h2>
+  {initialGame
+    ? "Step 2: Review Changes"
+    : "Step 4: Point Calculation"}
+</h2>
 <div className="mb-6">
   <h3 className="mb-4 font-semibold">
     Score Breakdown
@@ -1122,65 +1221,114 @@ return (
 setIsSaving(true);
 
 try {
-  await saveGame({
-  sessionId,
-  winnerId: winner,
-  winType,
-  discarderId:
-    otherPlayers.find(
-      (p) =>
-        p.players.name === discarder
-    )?.player_id ?? null,
-  flowers,
-  kongs: kongCount,
-  score: handValue,
+  const payload = {
+    winnerId: winner,
+    winType,
+    discarderId:
+      otherPlayers.find(
+        (p) =>
+          p.players.name ===
+          discarder
+      )?.player_id ?? null,
+    flowers,
+    kongs: kongCount,
+    score: handValue,
     handData: {
-      flowers,
-      kongCount,
-      subtotal,
-      categoryMultiplier,
-      scoringCategory,
-      rawScore,
-      handValue,
-      winType,
-      discarder,
-      settlement,
-      meld1Tiles,
-      meld2Tiles,
-      meld3Tiles,
-      meld4Tiles,
-      pairTiles,
-      meld1Source,
-      meld2Source,
-      meld3Source,
-      meld4Source,
-      pairSource,
-    },
-  });
+  flowers,
+  kongCount,
+  subtotal,
+  categoryMultiplier,
+  scoringCategory,
+  rawScore,
+  handValue,
+  winType,
+  discarder,
+  participants:
+    selectedParticipants.map(
+      (p) => p.players.name
+    ),
+  settlement,
+  meld1Tiles,
+  meld2Tiles,
+  meld3Tiles,
+  meld4Tiles,
+  pairTiles,
+  meld1Source,
+  meld2Source,
+  meld3Source,
+  meld4Source,
+  pairSource,
+},
+  };
 
-  router.push(
-  `/sessions/${sessionId}`
-);
+  if (initialGame) {
+    await updateGame({
+  gameId: initialGame.id,
+  sessionId,
+  ...payload,
+});
+    await recalculateStats();
+
+    router.push(
+      `/sessions/${sessionId}/history`
+    );
+  } else {
+    await saveGame({
+      sessionId,
+      ...payload,
+    });
+
+    router.push(
+      `/sessions/${sessionId}`
+    );
+  }
 } catch (error) {
   console.error(error);
 
   setIsSaving(false);
 
-alert("Save Failed");
+  alert("Save Failed");
 }
   }}
   className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
 >
-  {isSaving
+ {isSaving
   ? "Saving..."
+  : initialGame
+  ? "Save Changes"
   : "Save & Update Leaderboard"}
 </button>
     </div>
   </div>
 )}
 
-</main>
+{(
+  (initialGame &&
+    (step === 3 ||
+      step === 4)) ||
+  (!initialGame &&
+    (step === 1 ||
+      step === 2 ||
+      step === 3 ||
+      step === 4))
+) && (
+  <div className="mt-6">
+    <button
+      onClick={() =>
+        router.push(
+          initialGame
+            ? `/sessions/${sessionId}/history`
+            : `/sessions/${sessionId}`
+        )
+      }
+      className="rounded border px-4 py-2"
+    >
+      Cancel
+    </button>
+  </div>
+)}
 
+</main>
 
 );
 }

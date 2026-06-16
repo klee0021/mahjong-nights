@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
 import { addPlayer } from "./actions/addPlayer";
 import { deletePlayer } from "./actions/deletePlayer";
@@ -50,9 +51,12 @@ export default async function PlayersPage() {
   key={player.id}
   className="flex items-center justify-between rounded-lg border bg-white p-4 shadow"
 >
-  <span>
-    {player.name}
-  </span>
+  <Link
+  href={`/players/${player.id}`}
+  className="font-medium text-blue-600 hover:text-blue-800"
+>
+  {player.name}
+</Link>
 
   {player.wins === 0 &&
 player.total_score === 0 && (

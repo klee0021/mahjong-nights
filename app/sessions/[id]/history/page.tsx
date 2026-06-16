@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
 import { deleteGame } from "../actions/deleteGame";
+import DeleteHandButton from "@/src/components/DeleteHandButton";
 
 type Props = {
   params: Promise<{
@@ -63,6 +64,14 @@ console.log(
     Hand #{games.length - index}
   </h2>
 
+  <div className="flex items-center gap-4 text-sm">
+  <Link
+    href={`/sessions/${id}/edit-game/${game.id}`}
+    className="font-medium text-gray-600 hover:text-black"
+  >
+    Edit
+  </Link>
+
   <form
     action={deleteGame.bind(
       null,
@@ -70,13 +79,9 @@ console.log(
       game.id
     )}
   >
-    <button
-      type="submit"
-      className="text-sm text-red-600 hover:text-red-800"
-    >
-      Delete
-    </button>
+    <DeleteHandButton />
   </form>
+</div>
 </div>
 
                 <div className="flex justify-between">
