@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
+export const dynamic =
+  "force-dynamic";
 
 export default async function Home() {
 const { data: activeSessions } =
