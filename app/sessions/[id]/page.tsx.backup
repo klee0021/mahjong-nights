@@ -5,12 +5,6 @@ import { Card, PanelHeader, Button } from "@/src/components/ui/primitives";
 import { Leaderboard } from "@/src/components/ui/Leaderboard";
 import { MahjongTile } from "@/src/components/mj/MahjongTile";
 import { endSession } from "./actions/endSession";
-import { addParticipant } from "./actions/addParticipant";
-import { removeParticipant } from "./actions/removeParticipant";
-import { renameSession } from "./actions/renameSession";
-import { deleteSession } from "./actions/deleteSession";
-import DeleteSessionButton from "@/src/components/DeleteSessionButton";
-import InlineRenameSession from "./InlineRenameSession";
 import type { Standing } from "@/src/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -22,8 +16,6 @@ export function SessionDashboardView({
   participantCount,
 participantList,
 players,
-playersWhoPlayed,
-addParticipantAction,
 hands,
 standings
 }: {
@@ -33,26 +25,13 @@ standings
   participantCount: number;
   participantList: any[];
 players: any[];
-playersWhoPlayed: Set<string>;
-addParticipantAction: any;
 hands: number;
-standings: Standing[];
+  standings: Standing[];
 }) {
   return (
     <AppShell>
       <Link href="/sessions" className="mb-3 inline-flex items-center gap-1 text-[13px] font-bold text-mj-muted">‹ Sessions</Link>
-      <div className="mb-4">
-  {isActive ? (
-    <InlineRenameSession
-      sessionName={name}
-      action={renameSession.bind(null, id)}
-    />
-  ) : (
-    <h1 className="font-display text-2xl font-bold text-mj-green">
-      {name}
-    </h1>
-  )}
-</div>
+      <h1 className="mb-4 font-display text-2xl font-bold text-mj-green">{name}</h1>
 
       <Card className="mb-4">
         <PanelHeader>Session Overview</PanelHeader>
@@ -78,32 +57,20 @@ standings: Standing[];
 
   {isActive && (
     <div className="border-b border-mj-line p-4">
-      <form
-  action={addParticipantAction}
-  className="flex gap-2"
->
+      <form className="flex gap-2">
         <select
-  name="playerId"
-  className="flex-1 rounded-2xl border border-mj-line bg-mj-card px-3 py-3 text-sm"
->
+          className="flex-1 rounded-2xl border border-mj-line bg-mj-card px-3 py-3 text-sm"
+        >
           <option>Select Player</option>
 
-          {players
-  ?.filter(
-    (player: any) =>
-      !participantList.some(
-        (participant: any) =>
-          participant.player_id === player.id
-      )
-  )
-  .map((player: any) => (
-    <option
-      key={player.id}
-      value={player.id}
-    >
-      {player.name}
-    </option>
-  ))}
+          {players?.map((player: any) => (
+            <option
+              key={player.id}
+              value={player.id}
+            >
+              {player.name}
+            </option>
+          ))}
         </select>
 
         <Button type="submit">
@@ -115,36 +82,20 @@ standings: Standing[];
 
   <div className="divide-y divide-mj-line/70">
     {participantList.length ? (
-     participantList.map((participant: any) => (
-  <div
-    key={participant.player_id}
-    className="flex items-center justify-between px-4 py-3"
-  >
-    <span className="font-semibold">
-      {participant.players?.name}
-    </span>
+      participantList.map((participant: any) => (
+        <div
+          key={participant.player_id}
+          className="flex items-center justify-between px-4 py-3"
+        >
+          <span className="font-semibold">
+            {participant.players?.name}
+          </span>
 
-    {isActive &&
- !playersWhoPlayed.has(
-   participant.players?.name
- ) && (
-  <form
-    action={removeParticipant.bind(
-      null,
-      id,
-      participant.player_id
-    )}
-  >
-    <button
-      type="submit"
-      className="text-sm text-mj-muted hover:text-mj-neg"
-    >
-      ✕
-    </button>
-  </form>
-)}
-  </div>
-))
+          <span className="text-xs text-mj-muted">
+            Active Player
+          </span>
+        </div>
+      ))
     ) : (
       <div className="px-4 py-4 text-sm text-mj-muted">
         No participants.
@@ -155,21 +106,11 @@ standings: Standing[];
 
       <div className="flex flex-col gap-3">
         <Link href={`/sessions/${id}/history`}><Button variant="secondary" className="w-full">📜 Hand History</Button></Link>
-        {isActive ? (
-  <form action={endSession.bind(null, id)}>
-    <Button
-      variant="secondary"
-      type="submit"
-      className="w-full border-[#eccaa0] bg-[#f8efdb] text-[#8a6a2e]"
-    >
-      End Session
-    </Button>
-  </form>
-) : (
-  <form action={deleteSession.bind(null, id)}>
-    <DeleteSessionButton />
-  </form>
-)}
+        {isActive && (
+          <form action={endSession.bind(null, id)}>
+            <Button variant="secondary" type="submit" className="w-full border-[#eccaa0] bg-[#f8efdb] text-[#8a6a2e]">End Session</Button>
+          </form>
+        )}
       </div>
     </AppShell>
   );
@@ -177,8 +118,6 @@ standings: Standing[];
 
 export default async function SessionPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-const addParticipantWithSession =
-  addParticipant.bind(null, id);
   const { data: session } = await supabase.from("sessions").select("*").eq("id", id).single();
 const { data: players } = await supabase
   .from("players")
@@ -200,13 +139,6 @@ const { data: players } = await supabase
   (participants ?? []).forEach((p: any) => { totals[p.players.name] = 0; });
   (games ?? []).forEach((g: any) => (g.hand_data?.settlement ?? []).forEach((e: any) => { totals[e.player] = (totals[e.player] ?? 0) + e.points; }));
   const standings: Standing[] = Object.entries(totals).map(([name, points]) => ({ name, points })).sort((a, b) => b.points - a.points);
-const playersWhoPlayed = new Set<string>();
-
-(games ?? []).forEach((g: any) => {
-  (g.hand_data?.settlement ?? []).forEach((e: any) => {
-    playersWhoPlayed.add(e.player);
-  });
-});
 
   return (
   <SessionDashboardView
@@ -216,8 +148,6 @@ const playersWhoPlayed = new Set<string>();
     participantCount={participants?.length ?? 0}
     participantList={participants ?? []}
 players={players ?? []}
-playersWhoPlayed={playersWhoPlayed}
-addParticipantAction={addParticipantWithSession}
 hands={games?.length ?? 0}
     standings={standings}
   />

@@ -1,115 +1,66 @@
 import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
-export const dynamic =
-  "force-dynamic";
+import { AppShell } from "@/src/components/ui/AppShell";
+import { Card, PanelHeader, SectionLabel, Sparkle } from "@/src/components/ui/primitives";
+import { Leaderboard } from "@/src/components/ui/Leaderboard";
+import { MahjongTile } from "@/src/components/mj/MahjongTile";
+import type { Player, SessionSummary, Standing } from "@/src/lib/types";
 
-export default async function Home() {
-const { data: activeSessions } =
-  await supabase
-    .from("sessions")
-    .select("*")
-    .eq("is_active", true)
-    .order("created_at", {
-      ascending: false,
-    });
-const { data: players } =
-  await supabase
-    .from("players")
-    .select("*")
-    .order("total_score", {
-      ascending: false,
-    });
+export const dynamic = "force-dynamic";
+
+/* ---- Presentational view (props-driven) ---- */
+export function HomeView({ openSessions, leaderboard }: { openSessions: SessionSummary[]; leaderboard: Standing[] }) {
   return (
-    <main className="min-h-screen bg-slate-100 p-8">
-      <div className="mx-auto max-w-4xl">
-        <h1 className="mb-2 text-4xl font-bold">
-          🀄 Mahjong Nights
-        </h1>
-
-        <p className="mb-8 text-gray-600">
-          Session leaderboard and game tracker
-        </p>
-
-        <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-xl bg-white p-6 shadow">
-  <h2 className="mb-4 text-2xl font-semibold">
-    Open Sessions
-  </h2>
-
-  {activeSessions?.length ? (
-    <div className="space-y-3">
-      {activeSessions.map(
-        (session: any) => (
-          <div
-            key={session.id}
-            className="border-b pb-3 last:border-b-0"
-          >
-            <Link
-              href={`/sessions/${session.id}`}
-              className="text-lg font-medium underline"
-            >
-              {session.name}
-            </Link>
-
-            <p className="text-sm text-gray-500">
-              {new Date(
-  session.created_at
-).toLocaleDateString("en-GB")}
-            </p>
-          </div>
-        )
-      )}
-    </div>
-  ) : (
-    <p>No active sessions.</p>
-  )}
-
-  <Link
-    href="/sessions"
-    className="mt-4 inline-block rounded border px-4 py-2"
-  >
-    Create Session
-  </Link>
-</div>
-
-          <div className="rounded-xl bg-white p-6 shadow">
-  <h2 className="mb-4 text-2xl font-semibold">
-    All-Time Leaderboard
-  </h2>
-
-  {players?.length ? (
-    <div className="space-y-2">
-      {players.map(
-        (player: any) => (
-          <div
-  key={player.id}
-  className="border-b py-2 last:border-b-0"
->
-  <div className="grid grid-cols-3">
-  <span>
-    {player.name}
-  </span>
-
-  <span className="text-center">
-    {player.wins}W
-  </span>
-
-  <span className="text-right">
-    {player.total_score > 0
-      ? `+${player.total_score}`
-      : player.total_score}
-  </span>
-</div>
-</div>
-        )
-      )}
-    </div>
-  ) : (
-    <p>No players yet.</p>
-  )}
-</div>
+    <AppShell active="home">
+      <div className="mb-6 flex items-center gap-4">
+        <div className="relative">
+          <Sparkle className="absolute -left-2 -top-2" size={12} />
+          <MahjongTile char="🀄" size="lg" />
+        </div>
+        <div>
+          <h1 className="font-display text-3xl font-bold uppercase leading-none text-mj-green">Mahjong<br />Nights</h1>
+          <p className="mt-1.5 text-[13px] text-mj-muted">Session leaderboard &amp; game tracker</p>
         </div>
       </div>
-    </main>
+
+      <Card className="mb-4 p-4">
+        <div className="mb-3"><SectionLabel>Open Sessions</SectionLabel></div>
+        <div className="flex flex-col gap-2.5">
+          {openSessions.length ? openSessions.map((s) => (
+            <Link key={s.id} href={`/sessions/${s.id}`}
+              className="flex items-center gap-3 rounded-2xl border border-mj-line bg-mj-paper px-3.5 py-3 hover:bg-mj-greensoft/40">
+              <MahjongTile
+  char={(s as any).tile ?? "🀄"}
+  size="sm"
+/>
+              <div className="flex-1">
+                <div className="text-[15px] font-extrabold">{s.name}</div>
+                <div className="text-xs text-mj-muted">{[fmtDate(s.created_at), `${s.player_count ?? 0} players`, `${s.hand_count ?? 0} hands`].join(" · ")}</div>
+              </div>
+              <span className="text-xl font-bold text-mj-green">→</span>
+            </Link>
+          )) : <p className="text-sm text-mj-muted">No open sessions.</p>}
+        </div>
+        <Link href="/sessions"
+          className="mt-3 block rounded-2xl border-[1.5px] border-dashed border-[#c4bca6] py-3 text-center text-[13px] font-extrabold tracking-wide text-mj-green">
+          + CREATE SESSION
+        </Link>
+      </Card>
+
+      <Card>
+        <PanelHeader>All-Time Leaderboard</PanelHeader>
+        <Leaderboard rows={leaderboard} />
+      </Card>
+    </AppShell>
   );
+}
+
+const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB");
+
+/* ---- Route (server): fetch + pass props ---- */
+export default async function HomePage() {
+  const { data: sessions } = await supabase.from("sessions").select("*").eq("is_active", true).order("created_at", { ascending: false });
+  const { data: players } = await supabase.from("players").select("*").order("total_score", { ascending: false });
+  const leaderboard: Standing[] = (players ?? []).map((p: Player) => ({ name: p.name, points: p.total_score, wins: p.wins }));
+  return <HomeView openSessions={(sessions ?? []) as SessionSummary[]} leaderboard={leaderboard} />;
 }

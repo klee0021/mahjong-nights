@@ -1,26 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Mulish:wght@400;500;600;700;800&display=swap");
+
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Fonts: chunky slab serif for display, humanist sans for UI */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ---- Design tokens (Tailwind v4 @theme → utility classes like bg-mj-green) ---- */
+@theme {
+  --color-mj-paper:    #f3efe3; /* app background (warm ivory) */
+  --color-mj-card:     #faf7ef; /* card surface */
+  --color-mj-ink:      #23281f; /* primary text */
+  --color-mj-muted:    #7a7566; /* secondary text */
+  --color-mj-line:     #e7e0cf; /* hairline borders */
+  --color-mj-green:    #184a35; /* primary forest green */
+  --color-mj-greenSoft:#e2ecdf; /* green tint backgrounds */
+  --color-mj-pos:      #1f8a52; /* positive scores / wins */
+  --color-mj-neg:      #cb3a2c; /* negative scores / red dragon */
+  --color-mj-coral:    #ef8a7d; /* sparkles / festive accent */
+  --color-mj-gold:     #a9853f; /* labels / brass accent */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: "Zilla Slab", Georgia, serif;
+  --font-sans: "Mulish", system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-mj-paper);
+  color: var(--color-mj-ink);
+  font-family: var(--font-sans);
 }
+
+/* =====================================================================
+   TILE FACES
+   Use via the <MahjongTile> component. `.tile` is the base; size with
+   `.tile-sm`. Inner spans set the colored glyph / pips / sticks.
+   ===================================================================== */
+.tile {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1px; width: 34px; height: 46px; flex: 0 0 auto;
+  background: #fffdf8; border: 1px solid #ddd5c2; border-bottom: 4px solid #e6dcc2;
+  border-radius: 7px; box-shadow: 0 2px 5px rgba(40, 35, 20, .12);
+}
+.tile-sm { width: 28px; height: 38px; border-bottom-width: 3px; }
+.tile-lg { width: 40px; height: 54px; }
+
+.t-dragon-r { color: #cb3a2c; font-weight: 800; font-size: 22px; line-height: 1; }
+.t-dragon-g { color: #1f8a52; font-weight: 800; font-size: 22px; line-height: 1; }
+.t-wind     { color: #22303a; font-weight: 800; font-size: 22px; line-height: 1; }
+.t-num      { color: #22303a; font-weight: 700; font-size: 12px; line-height: 1; margin-bottom: 1px; }
+.t-wan      { color: #cb3a2c; font-weight: 800; font-size: 15px; line-height: 1; } /* 萬 is red */
+.t-white    { width: 14px; height: 18px; border: 2.5px solid #2b3942; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #fff, inset 0 0 0 2.5px #2b3942; }
+.tile-sm .t-dragon-r, .tile-sm .t-dragon-g, .tile-sm .t-wind { font-size: 18px; }
+.tile-sm .t-num { font-size: 10px; } .tile-sm .t-wan { font-size: 12px; }
+.tile-sm .t-white { width: 11px; height: 15px; border-width: 2px; }
+
+/* dots (筒) & bamboo (索): grid arranged by tile number (.mj-n1 … .mj-n9) */
+.t-dots, .t-bamboo { display: grid; gap: 2px; place-content: center; place-items: center; width: 100%; height: 100%; }
+.t-dots.mj-n1, .t-bamboo.mj-n1 { grid-template: 1fr / 1fr; }
+.t-dots.mj-n2 { grid-template: repeat(2, 1fr) / 1fr; }
+.t-bamboo.mj-n2 { grid-template: repeat(2, 1fr) / 1fr; }
+.t-dots.mj-n3 { grid-template: repeat(3, 1fr) / repeat(3, 1fr); }
+.t-dots.mj-n3 .t-pip:nth-child(1) { grid-area: 1/1; } .t-dots.mj-n3 .t-pip:nth-child(2) { grid-area: 2/2; } .t-dots.mj-n3 .t-pip:nth-child(3) { grid-area: 3/3; }
+.t-bamboo.mj-n3 { grid-template: repeat(2, 1fr) / repeat(2, 1fr); }
+.t-bamboo.mj-n3 .t-stick:nth-child(1) { grid-area: 1/1/2/3; } .t-bamboo.mj-n3 .t-stick:nth-child(2) { grid-area: 2/1; } .t-bamboo.mj-n3 .t-stick:nth-child(3) { grid-area: 2/2; }
+.t-dots.mj-n4, .t-bamboo.mj-n4 { grid-template: repeat(2, 1fr) / repeat(2, 1fr); }
+.t-dots.mj-n5, .t-bamboo.mj-n5 { grid-template: repeat(3, 1fr) / repeat(3, 1fr); }
+.t-dots.mj-n5 .t-pip:nth-child(1), .t-bamboo.mj-n5 .t-stick:nth-child(1) { grid-area: 1/1; }
+.t-dots.mj-n5 .t-pip:nth-child(2), .t-bamboo.mj-n5 .t-stick:nth-child(2) { grid-area: 1/3; }
+.t-dots.mj-n5 .t-pip:nth-child(3), .t-bamboo.mj-n5 .t-stick:nth-child(3) { grid-area: 2/2; }
+.t-dots.mj-n5 .t-pip:nth-child(4), .t-bamboo.mj-n5 .t-stick:nth-child(4) { grid-area: 3/1; }
+.t-dots.mj-n5 .t-pip:nth-child(5), .t-bamboo.mj-n5 .t-stick:nth-child(5) { grid-area: 3/3; }
+.t-dots.mj-n6 { grid-template: repeat(3, 1fr) / repeat(2, 1fr); }
+.t-bamboo.mj-n6 { grid-template: repeat(2, 1fr) / repeat(3, 1fr); }
+.t-dots.mj-n7 { grid-template: repeat(3, 1fr) / repeat(3, 1fr); }
+.t-dots.mj-n7 .t-pip:nth-child(1) { grid-area: 1/1; } .t-dots.mj-n7 .t-pip:nth-child(2) { grid-area: 1/2; } .t-dots.mj-n7 .t-pip:nth-child(3) { grid-area: 1/3; }
+.t-dots.mj-n7 .t-pip:nth-child(4) { grid-area: 2/1; } .t-dots.mj-n7 .t-pip:nth-child(5) { grid-area: 2/3; }
+.t-dots.mj-n7 .t-pip:nth-child(6) { grid-area: 3/1; } .t-dots.mj-n7 .t-pip:nth-child(7) { grid-area: 3/3; }
+.t-bamboo.mj-n7 { grid-template: repeat(3, 1fr) / repeat(3, 1fr); }
+.t-bamboo.mj-n7 .t-stick:nth-child(1) { grid-area: 1/2; }
+.t-bamboo.mj-n7 .t-stick:nth-child(2) { grid-area: 2/1; } .t-bamboo.mj-n7 .t-stick:nth-child(3) { grid-area: 2/2; } .t-bamboo.mj-n7 .t-stick:nth-child(4) { grid-area: 2/3; }
+.t-bamboo.mj-n7 .t-stick:nth-child(5) { grid-area: 3/1; } .t-bamboo.mj-n7 .t-stick:nth-child(6) { grid-area: 3/2; } .t-bamboo.mj-n7 .t-stick:nth-child(7) { grid-area: 3/3; }
+.t-dots.mj-n8 { grid-template: repeat(4, 1fr) / repeat(2, 1fr); }
+.t-bamboo.mj-n8 { grid-template: repeat(2, 1fr) / repeat(4, 1fr); }
+.t-dots.mj-n9, .t-bamboo.mj-n9 { grid-template: repeat(3, 1fr) / repeat(3, 1fr); }
+/* dots 5: tight 2x2 greens + red center (like dots 4) */
+.t-dots.mj-n5 { position: relative; grid-template: repeat(2, 1fr) / repeat(2, 1fr); }
+.t-dots.mj-n5 .t-pip:nth-child(2) { grid-area: 1/2; }
+.t-dots.mj-n5 .t-pip:nth-child(3) { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.t-dots.mj-n5 .t-pip:nth-child(4) { grid-area: 2/1; }
+.t-dots.mj-n5 .t-pip:nth-child(5) { grid-area: 2/2; }
+/* dots 7: tight bottom 2x2 reds */
+.t-dots.mj-n7 .t-pip:nth-child(4) { grid-area: 2/1; } .t-dots.mj-n7 .t-pip:nth-child(5) { grid-area: 2/2; }
+.t-dots.mj-n7 .t-pip:nth-child(6) { grid-area: 3/1; } .t-dots.mj-n7 .t-pip:nth-child(7) { grid-area: 3/2; }
+/* bamboo 8: W over M */
+/* 8-bamboo: plain two rows of four (no rotation) */
+.t-bamboo.mj-n8 .t-stick { transform: none; } /* 8-bamboo: plain 2 rows of 4 */
+.t-dots.mj-n7 { grid-template: repeat(3, 1fr) / repeat(6, 1fr); }
+.t-dots.mj-n7 .t-pip:nth-child(1) { grid-area: 1/1/2/3; } .t-dots.mj-n7 .t-pip:nth-child(2) { grid-area: 1/3/2/5; } .t-dots.mj-n7 .t-pip:nth-child(3) { grid-area: 1/5/2/7; }
+.t-dots.mj-n7 .t-pip:nth-child(4) { grid-area: 2/2/3/4; } .t-dots.mj-n7 .t-pip:nth-child(5) { grid-area: 2/4/3/6; }
+.t-dots.mj-n7 .t-pip:nth-child(6) { grid-area: 3/2/4/4; } .t-dots.mj-n7 .t-pip:nth-child(7) { grid-area: 3/4/4/6; }
+/* dots — concentric ring "wheels" */
+.t-pip {
+  width: 9px; height: 9px; border-radius: 50%; --pc: #1f7a48;
+  background: radial-gradient(circle, var(--pc) 0 1.3px, #fff 1.3px 2.4px, var(--pc) 2.4px 3.5px, #fff 3.5px);
+  box-shadow: inset 0 0 0 1px var(--pc);
+}
+.t-pip.red { --pc: #cb3a2c; } .t-pip.blue { --pc: #222831; }
+.t-pip.big { width: 17px; height: 17px; box-shadow: inset 0 0 0 1.5px #1f7a48;
+  background: radial-gradient(circle, #cb3a2c 0 2.2px, #fff 2.2px 3.6px, #1f7a48 3.6px 5px, #fff 5px 6.4px, #cb3a2c 6.4px 7.8px, #fff 7.8px); }
+.tile-sm .t-pip { width: 7px; height: 7px; box-shadow: inset 0 0 0 1px var(--pc);
+  background: radial-gradient(circle, var(--pc) 0 1px, #fff 1px 1.9px, var(--pc) 1.9px 2.8px, #fff 2.8px); }
+.tile-sm .t-pip.big { width: 14px; height: 14px; }
+/* bamboo — segmented green stalks (with knuckles); 1-bamboo is a bird */
+.t-stick { position: relative; width: 6px; height: 16px; border-radius: 3px;
+  background: linear-gradient(90deg, #15693d, #3aa86d 45%, #15693d); }
+.t-stick::before, .t-stick::after { content: ""; position: absolute; left: -1px; right: -1px; height: 2px; background: #0d4226; border-radius: 1px; }
+.t-stick::before { top: 30%; } .t-stick::after { top: 62%; }
+.t-stick.red { background: linear-gradient(90deg, #9e2a20, #d6483b 45%, #9e2a20); }
+.t-stick.red::before, .t-stick.red::after { background: #651a13; }
+.tile-sm .t-stick { width: 5px; height: 12px; }
+/* bamboo stalk heights by row count */
+.t-bamboo.mj-n2 .t-stick, .t-bamboo.mj-n3 .t-stick { height: 13px; }
+.t-bamboo.mj-n4 .t-stick, .t-bamboo.mj-n6 .t-stick, .t-bamboo.mj-n8 .t-stick { height: 13px; }
+.t-bamboo.mj-n5 .t-stick, .t-bamboo.mj-n7 .t-stick, .t-bamboo.mj-n9 .t-stick { height: 11px; }
+.tile-sm .t-bamboo.mj-n2 .t-stick, .tile-sm .t-bamboo.mj-n3 .t-stick { height: 10px; }
+.tile-sm .t-bamboo.mj-n4 .t-stick, .tile-sm .t-bamboo.mj-n6 .t-stick, .tile-sm .t-bamboo.mj-n8 .t-stick { height: 10px; }
+.tile-sm .t-bamboo.mj-n5 .t-stick, .tile-sm .t-bamboo.mj-n7 .t-stick, .tile-sm .t-bamboo.mj-n9 .t-stick { height: 8px; }
+.t-bird { position: relative; width: 18px; height: 20px; }
+.t-bird i { position: absolute; }
+.t-bird .b1 { bottom: 1px; left: 5px; width: 8px; height: 13px; border-radius: 60% 60% 50% 50% / 70% 70% 42% 42%; background: #1f8a52; transform: rotate(-7deg); }
+.t-bird .b2 { top: 0; left: 9px; width: 6px; height: 6px; border-radius: 50%; background: #cb3a2c; }
+.t-bird .b3 { bottom: 0; left: 0; width: 9px; height: 3px; border-radius: 2px; background: #1f8a52; transform: rotate(28deg); }
+.tile-sm .t-bird { transform: scale(.8); }
+
+/* flower / sakura */
+.t-sakura {
+  width: 22px; height: 22px; background:
+    radial-gradient(circle at 50% 16%, #ef9aa2 24%, transparent 26%),
+    radial-gradient(circle at 82% 42%, #ef9aa2 24%, transparent 26%),
+    radial-gradient(circle at 68% 84%, #ef9aa2 24%, transparent 26%),
+    radial-gradient(circle at 32% 84%, #ef9aa2 24%, transparent 26%),
+    radial-gradient(circle at 18% 42%, #ef9aa2 24%, transparent 26%),
+    radial-gradient(circle at 50% 50%, #ecc84a 15%, transparent 17%);
+}
+.tile-sm .t-sakura { width: 18px; height: 18px; }
+
+/* =====================================================================
+   MEDALS (leaderboard ranks)
+   ===================================================================== */
+.medal {
+  width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;
+}
+.medal-gold   { background: #f3c33b; color: #6b520f; box-shadow: inset 0 0 0 3px #e0a92a; }
+.medal-silver { background: #cdd2d4; color: #474c4f; box-shadow: inset 0 0 0 3px #b3b9bc; }
+.medal-bronze { background: #dd9248; color: #5a3410; box-shadow: inset 0 0 0 3px #c87d36; }
+.medal-plain  { background: #fff;    color: #7a7566; box-shadow: inset 0 0 0 1.5px #d9d2c0; }
+
+/* =====================================================================
+   FRET CORNER ORNAMENTS (place inside a position:relative green bar)
+   ===================================================================== */
+.fret { position: absolute; width: 14px; height: 14px; opacity: .55; }
+.fret-tl { top: 8px; left: 10px;  border-top: 2px solid #b9d3bf; border-left: 2px solid #b9d3bf; }
+.fret-tr { top: 8px; right: 10px; border-top: 2px solid #b9d3bf; border-right: 2px solid #b9d3bf; }
+.fret-bl { bottom: 8px; left: 10px;  border-bottom: 2px solid #b9d3bf; border-left: 2px solid #b9d3bf; }
+.fret-br { bottom: 8px; right: 10px; border-bottom: 2px solid #b9d3bf; border-right: 2px solid #b9d3bf; }

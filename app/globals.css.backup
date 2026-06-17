@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-mj-paper: #f3efe3;
+  --color-mj-card: #faf7ef;
+  --color-mj-ink: #23281f;
+  --color-mj-muted: #7a7566;
+  --color-mj-line: #e7e0cf;
+  --color-mj-green: #184a35;
+  --color-mj-greensoft: #e2ecdf;
+  --color-mj-pos: #1f8a52;
+  --color-mj-neg: #cb3a2c;
+  --color-mj-coral: #ef8a7d;
+  --color-mj-gold: #a9853f;
+
+  --font-display: Georgia, serif;
+}
+
+body {
+  background: var(--color-mj-paper);
+  color: var(--color-mj-ink);
+}

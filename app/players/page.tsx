@@ -1,82 +1,58 @@
-import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
+import { AppShell } from "@/src/components/ui/AppShell";
+import { Medal, ScoreValue, Button } from "@/src/components/ui/primitives";
 import { addPlayer } from "./actions/addPlayer";
-import { deletePlayer } from "./actions/deletePlayer";
 import { recalculateStats } from "./actions/recalculateStats";
+import PlayersView from "./PlayersView";
+import type { Player } from "@/src/lib/types";
+
+export const dynamic = "force-dynamic";
 
 export default async function PlayersPage() {
-  const { data: players } = await supabase
+  const { data } = await supabase
     .from("players")
     .select("*")
-    .order("name");
+    .order("total_score", { ascending: false });
+
+  const players = (data ?? []) as Player[];
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="mb-6 flex items-center gap-4">
-  <h1 className="text-4xl font-bold">
-    Players
-  </h1>
+    <AppShell active="players">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h1 className="font-display text-2xl font-bold uppercase text-mj-green">
+          Players
+        </h1>
 
-  <form action={recalculateStats}>
-    <button
-      type="submit"
-      className="rounded border px-4 py-2"
-    >
-      Recalculate Stats
-    </button>
-  </form>
-</div>
+        <form action={recalculateStats}>
+          <Button
+            variant="secondary"
+            type="submit"
+            className="px-3 py-2 text-xs"
+          >
+            ↻ Recalculate
+          </Button>
+        </form>
+      </div>
 
       <form
         action={addPlayer}
-        className="mb-6 flex gap-2"
+        className="mb-5 flex gap-2.5"
       >
         <input
           name="name"
           placeholder="Player name"
-          className="rounded border px-3 py-2"
+          className="flex-1 rounded-2xl border border-mj-line bg-mj-card px-3.5 py-3 text-sm outline-none focus:border-mj-green"
         />
 
-        <button
+        <Button
           type="submit"
-          className="rounded border px-4 py-2"
+          className="px-4 py-3"
         >
-          Add Player
-        </button>
+          Add
+        </Button>
       </form>
 
-      <div className="space-y-3">
-        {players?.map((player) => (
-          <div
-  key={player.id}
-  className="flex items-center justify-between rounded-lg border bg-white p-4 shadow"
->
-  <Link
-  href={`/players/${player.id}`}
-  className="font-medium text-blue-600 hover:text-blue-800"
->
-  {player.name}
-</Link>
-
-  {player.wins === 0 &&
-player.total_score === 0 && (
-  <form
-    action={deletePlayer.bind(
-      null,
-      player.id
-    )}
-  >
-   <button
-  type="submit"
-  className="text-sm text-gray-500 hover:text-black"
->
-  ✕
-</button>
-  </form>
-)}
-</div>
-        ))}
-      </div>
-    </main>
+      <PlayersView players={players} />
+    </AppShell>
   );
 }

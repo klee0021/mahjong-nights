@@ -1,0 +1,122 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { Medal, ScoreValue } from "@/src/components/ui/primitives";
+import type { Player } from "@/src/lib/types";
+
+export default function PlayersView({
+  players,
+}: {
+  players: Player[];
+}) {
+  const [orderBy, setOrderBy] =
+    useState<"score" | "wins" | "name">(
+      "score"
+    );
+const scoreRanks = new Map(
+  [...players]
+    .sort(
+      (a, b) =>
+        b.total_score - a.total_score
+    )
+    .map((player, index) => [
+      player.id,
+      index + 1,
+    ])
+);
+
+  const sortedPlayers = useMemo(() => {
+    const copy = [...players];
+
+    switch (orderBy) {
+      case "wins":
+        return copy.sort(
+          (a, b) => b.wins - a.wins
+        );
+
+      case "name":
+        return copy.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+      default:
+        return copy.sort(
+          (a, b) =>
+            b.total_score - a.total_score
+        );
+    }
+  }, [players, orderBy]);
+
+  return (
+    <>
+      <div className="mb-4">
+        <div className="mb-3 flex items-center gap-3">
+  <span className="text-sm font-bold text-mj-muted">
+    Sort:
+  </span>
+
+  <div className="inline-flex rounded-2xl border border-mj-line bg-mj-card p-1">
+    {[
+            ["score", "Score"],
+            ["wins", "Wins"],
+            ["name", "Name"],
+          ].map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() =>
+                setOrderBy(
+                  value as
+                    | "score"
+                    | "wins"
+                    | "name"
+                )
+              }
+              className={`rounded-xl px-4 py-2 text-sm font-bold transition-colors ${
+  orderBy === value
+    ? "bg-mj-green text-white"
+    : "text-mj-muted hover:text-mj-green"
+}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+</div>
+
+      <ul className="flex flex-col gap-2.5">
+        {sortedPlayers.map((p, i) => (
+          <li
+            key={p.id}
+            className="flex items-center gap-3 rounded-2xl border border-mj-line bg-mj-card px-4 py-3"
+          >
+            <Medal
+  rank={
+    scoreRanks.get(p.id) ??
+    i + 1
+  }
+/>
+
+            <Link
+              href={`/players/${p.id}`}
+              className="flex-1 text-[15px] font-extrabold text-mj-green hover:underline"
+            >
+              {p.name}
+            </Link>
+
+            <span className="text-xs font-bold text-mj-muted">
+              {p.wins}W
+            </span>
+
+            <ScoreValue
+              value={p.total_score}
+              className="w-14 text-right text-[16px]"
+            />
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
