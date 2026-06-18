@@ -51,7 +51,6 @@ export function HomeView({ openSessions, leaderboard }: { openSessions: SessionS
   <PanelHeader>All-Time Leaderboard</PanelHeader>
 
   <Leaderboard rows={leaderboard} />
-
 </Card>
     </AppShell>
   );
