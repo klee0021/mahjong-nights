@@ -48,9 +48,10 @@ export function HomeView({ openSessions, leaderboard }: { openSessions: SessionS
       </Card>
 
       <Card>
-        <PanelHeader>All-Time Leaderboard</PanelHeader>
-        <Leaderboard rows={leaderboard} />
-      </Card>
+  <PanelHeader>All-Time Leaderboard</PanelHeader>
+
+  <Leaderboard rows={leaderboard} />
+</Card>
     </AppShell>
   );
 }
@@ -59,8 +60,48 @@ const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB");
 
 /* ---- Route (server): fetch + pass props ---- */
 export default async function HomePage() {
-  const { data: sessions } = await supabase.from("sessions").select("*").eq("is_active", true).order("created_at", { ascending: false });
-  const { data: players } = await supabase.from("players").select("*").order("total_score", { ascending: false });
-  const leaderboard: Standing[] = (players ?? []).map((p: Player) => ({ name: p.name, points: p.total_score, wins: p.wins }));
-  return <HomeView openSessions={(sessions ?? []) as SessionSummary[]} leaderboard={leaderboard} />;
+  const { data: sessions } = await supabase
+    .from("sessions")
+    .select("*")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false });
+
+  const { data: players } = await supabase
+    .from("players")
+    .select("*")
+    .order("total_score", { ascending: false });
+
+  const enrichedSessions = await Promise.all(
+    (sessions ?? []).map(async (session) => {
+      const { count: playerCount } = await supabase
+        .from("session_players")
+        .select("*", { count: "exact", head: true })
+        .eq("session_id", session.id);
+
+      const { count: handCount } = await supabase
+        .from("games")
+        .select("*", { count: "exact", head: true })
+        .eq("session_id", session.id);
+
+      return {
+        ...session,
+        player_count: playerCount ?? 0,
+        hand_count: handCount ?? 0,
+      };
+    })
+  );
+
+  const leaderboard: Standing[] =
+    (players ?? []).map((p: Player) => ({
+      name: p.name,
+      points: p.total_score,
+      wins: p.wins,
+    }));
+
+  return (
+    <HomeView
+      openSessions={enrichedSessions as SessionSummary[]}
+      leaderboard={leaderboard}
+    />
+  );
 }
