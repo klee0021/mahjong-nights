@@ -6,6 +6,11 @@ import { saveGame } from "../actions/saveGame";
 import { updateGame } from "../actions/updateGame";
 import MeldEditor from "@/src/components/MeldEditor";
 import { recalculateStats } from "@/app/players/actions/recalculateStats";
+import {
+  Button,
+  OptionButton,
+  Indicator,
+} from "@/src/components/ui/primitives";
 
 type Participant = {
 player_id: string;
@@ -21,6 +26,57 @@ type Props = {
   initialGame?: any;
 };
 
+const Stepper = ({
+  step,
+  total,
+}: {
+  step: number;
+  total: number;
+}) => (
+  <div className="mb-4 flex gap-1.5">
+    {Array.from(
+      { length: total },
+      (_, i) => (
+        <div
+          key={i}
+          className={`h-1.5 flex-1 rounded-full ${
+            i < step
+              ? "bg-mj-green"
+              : "bg-[#ddd5c2]"
+          }`}
+        />
+      )
+    )}
+  </div>
+);
+
+const StepHead = ({
+  n,
+  title,
+  right,
+}: {
+  n: string;
+  title: string;
+  right?: string;
+}) => (
+  <div className="mb-3.5 flex items-end justify-between">
+    <div>
+      <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-mj-neg">
+        Step {n} of 4
+      </div>
+
+      <div className="font-display text-xl font-bold text-mj-green">
+        {title}
+      </div>
+    </div>
+
+    {right && (
+      <span className="text-[13px] font-extrabold text-mj-green">
+        {right}
+      </span>
+    )}
+  </div>
+);
 export default function RecordGameWizard({
   sessionId,
   participants,
@@ -530,74 +586,97 @@ const settlement =
       ];
 
 return (
-  <main className="min-h-screen p-8">
-    <h1 className="mb-2 text-4xl font-bold">
-  {initialGame
-    ? "Edit Hand"
-    : "Record Game"}
-</h1>
+  <div className="mx-auto max-w-3xl px-4 pb-24 pt-4">
 
-<p className="mb-6 text-gray-600">
-  {initialGame
-    ? `Step ${step - 2} of 2`
-    : `Step ${step} of 4`}
-</p>
+    <div className="mb-3 flex items-center justify-between">
+      <h1 className="font-display text-lg font-bold text-mj-green">
+        {initialGame
+          ? "Edit Hand"
+          : "Record a Hand"}
+      </h1>
 
-  {step === 1 && (
-    <div className="rounded-lg border bg-white p-6 shadow">
-      <h2 className="mb-4 text-2xl font-semibold">
-        Step 1: Select 4 Players
-      </h2>
-
-      <p className="mb-4 text-gray-600">
-        Selected: {selectedPlayers.length}/4
-      </p>
-
-      <div className="space-y-2">
-        {participants
-  .slice()
-  .sort((a, b) =>
-    a.players.name.localeCompare(
-      b.players.name
-    )
-  )
-  .map((participant) => (
-          <label
-            key={participant.player_id}
-            className="flex items-center gap-3"
-          >
-            <input
-              type="checkbox"
-              checked={selectedPlayers.includes(
-                participant.player_id
-              )}
-              onChange={() =>
-                togglePlayer(
-                  participant.player_id
-                )
-              }
-            />
-
-            <span>
-              {participant.players.name}
-            </span>
-          </label>
-        ))}
-      </div>
-
-      <div className="mt-6 flex gap-2">
-  <button
-    disabled={
-      selectedPlayers.length !== 4
-    }
-    onClick={() => setStep(2)}
-    className="rounded border px-4 py-2 disabled:opacity-50"
-  >
-    Next
-  </button>
-</div>
+      <button
+        onClick={() =>
+          router.push(
+            initialGame
+              ? `/sessions/${sessionId}/history`
+              : `/sessions/${sessionId}`
+          )
+        }
+        className="text-sm font-bold text-mj-muted"
+      >
+        Cancel
+      </button>
     </div>
-  )}
+
+    <Stepper
+      step={initialGame ? step - 2 : step}
+      total={initialGame ? 2 : 4}
+    />
+
+ {step === 1 && (
+  <>
+    <StepHead
+  n="1"
+  title="Select Players"
+  right={`${selectedPlayers.length} / 4`}
+/>
+
+    <div className="flex flex-col gap-2.5">
+      {participants
+        .slice()
+        .sort((a, b) =>
+          a.players.name.localeCompare(
+            b.players.name
+          )
+        )
+        .map((participant) => {
+          const selected =
+            selectedPlayers.includes(
+              participant.player_id
+            );
+
+          return (
+            <OptionButton
+  key={participant.player_id}
+  onClick={() =>
+    togglePlayer(
+      participant.player_id
+    )
+  }
+  className={`gap-3 rounded-2xl px-4 py-3.5 ${
+    selected
+      ? "border-[1.5px] border-mj-green bg-mj-card"
+      : "border border-mj-line bg-mj-paper opacity-70"
+  }`}
+>
+  <Indicator
+    className={`h-6 w-6 rounded-lg text-sm text-white ${
+      selected
+        ? "bg-mj-green"
+        : "border-[1.5px] border-[#c4bca6] bg-white"
+    }`}
+  >
+    {selected ? "✓" : ""}
+  </Indicator>
+
+  <span className="flex-1 font-extrabold">
+    {participant.players.name}
+  </span>
+</OptionButton>
+          );
+        })}
+    </div>
+
+    <Button
+  className="mt-5 w-full"
+  disabled={selectedPlayers.length !== 4}
+  onClick={() => setStep(2)}
+>
+  Next →
+</Button>
+  </>
+)}
 
   {step === 2 && (
     <div className="rounded-lg border bg-white p-6 shadow">
@@ -1302,33 +1381,7 @@ try {
   </div>
 )}
 
-{(
-  (initialGame &&
-    (step === 3 ||
-      step === 4)) ||
-  (!initialGame &&
-    (step === 1 ||
-      step === 2 ||
-      step === 3 ||
-      step === 4))
-) && (
-  <div className="mt-6">
-    <button
-      onClick={() =>
-        router.push(
-          initialGame
-            ? `/sessions/${sessionId}/history`
-            : `/sessions/${sessionId}`
-        )
-      }
-      className="rounded border px-4 py-2"
-    >
-      Cancel
-    </button>
-  </div>
-)}
-
-</main>
+</div>
 
 );
 }
