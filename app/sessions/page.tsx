@@ -47,7 +47,76 @@ export function SessionsView({ open, closed }: { open: SessionSummary[]; closed:
 }
 
 export default async function SessionsPage() {
-  const { data: open } = await supabase.from("sessions").select("*").eq("is_active", true).order("created_at", { ascending: false });
-  const { data: closed } = await supabase.from("sessions").select("*").eq("is_active", false).order("created_at", { ascending: false });
-  return <SessionsView open={(open ?? []) as SessionSummary[]} closed={(closed ?? []) as SessionSummary[]} />;
+  const { data: open } = await supabase
+    .from("sessions")
+    .select("*")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false });
+
+  const { data: closed } = await supabase
+    .from("sessions")
+    .select("*")
+    .eq("is_active", false)
+    .order("created_at", { ascending: false });
+
+  async function enrichSessions(
+    sessions: any[]
+  ) {
+    return Promise.all(
+      sessions.map(async (session) => {
+        const { count: playerCount } =
+          await supabase
+            .from("session_players")
+            .select("*", {
+              count: "exact",
+              head: true,
+            })
+            .eq(
+              "session_id",
+              session.id
+            );
+
+        const { count: handCount } =
+          await supabase
+            .from("games")
+            .select("*", {
+              count: "exact",
+              head: true,
+            })
+            .eq(
+              "session_id",
+              session.id
+            );
+
+        return {
+          ...session,
+          player_count:
+            playerCount ?? 0,
+          hand_count:
+            handCount ?? 0,
+        };
+      })
+    );
+  }
+
+  const enrichedOpen =
+    await enrichSessions(
+      open ?? []
+    );
+
+  const enrichedClosed =
+    await enrichSessions(
+      closed ?? []
+    );
+
+  return (
+    <SessionsView
+      open={
+        enrichedOpen as SessionSummary[]
+      }
+      closed={
+        enrichedClosed as SessionSummary[]
+      }
+    />
+  );
 }
