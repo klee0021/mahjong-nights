@@ -80,6 +80,47 @@ const StepHead = ({
     </div>
   </div>
 );
+const Line = ({
+  label,
+  value,
+  pos,
+  accent,
+  bold,
+  alt,
+}: {
+  label: string;
+  value: string;
+  pos?: boolean;
+  accent?: boolean;
+  bold?: boolean;
+  alt?: boolean;
+}) => (
+  <div
+    className={`flex items-center justify-between px-4 py-2.5 text-sm ${
+      alt ? "bg-mj-paper" : ""
+    }`}
+  >
+    <span
+      className={
+        bold ? "font-extrabold" : "text-mj-muted"
+      }
+    >
+      {label}
+    </span>
+
+    <span
+      className={`font-extrabold ${
+        pos
+          ? "text-mj-pos"
+          : accent
+          ? "text-mj-neg"
+          : ""
+      }`}
+    >
+      {value}
+    </span>
+  </div>
+);
 export default function RecordGameWizard({
   sessionId,
   participants,
