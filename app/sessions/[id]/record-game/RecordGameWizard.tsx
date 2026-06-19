@@ -12,6 +12,7 @@ import {
   Button,
   OptionButton,
   Indicator,
+  Sparkle,
 } from "@/src/components/ui/primitives";
 import { MahjongTile } from "@/src/components/mj/MahjongTile";
 
@@ -628,6 +629,16 @@ const settlement =
           })
         ),
       ];
+
+const result = {
+  handValue,
+  kongCount,
+  subtotal,
+  category: scoringCategory,
+  multiplier: categoryMultiplier,
+  concealed: concealedSelfDraw,
+  settlement,
+};
 
 return (
   <div className="mx-auto max-w-3xl px-4 pb-24 pt-4">
@@ -1314,218 +1325,88 @@ return (
   </div>
 )}
 
-{step === 4 && (
-  <div className="rounded-lg border bg-white p-6 shadow">
-    <h2 className="mb-4 text-2xl font-semibold">
-  {initialGame
-    ? "Step 2: Review Changes"
-    : "Step 4: Point Calculation"}
-</h2>
-<div className="mb-6">
-  <h3 className="mb-4 font-semibold">
-    Score Breakdown
-  </h3>
+ {step === 4 && (
+        <>
+          {/* Hero — grand total (中 watermark + sparkle + chips, matches Concept 10) */}
+          <Card className="relative mb-4 overflow-hidden bg-mj-green p-6 text-[#f4efe2]">
+            <span aria-hidden className="fret fret-tl pointer-events-none" />
+            <span aria-hidden className="fret fret-tr pointer-events-none" />
+            <span aria-hidden className="fret fret-bl pointer-events-none" />
+            <span aria-hidden className="fret fret-br pointer-events-none" />
+            <span aria-hidden className="pointer-events-none absolute right-3.5 top-2 select-none font-extrabold leading-none text-[#f4efe2] opacity-[0.12]" style={{ fontSize: 90 }}>中</span>
+            <Sparkle className="pointer-events-none absolute bottom-4 left-4 text-[#ef8a7d]" size={15} />
+            <div className="relative text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#9fbcab]">Hand Value · {winnerName} wins</div>
+            <div className="relative mt-1.5 flex items-baseline gap-2">
+              <span className="font-display text-6xl font-bold leading-none">{result.handValue}</span>
+              <span className="text-[15px] text-[#9fbcab]">points</span>
+            </div>
+            <div className="relative mt-3 flex flex-wrap gap-1.5">
+              <span className="rounded-full bg-white/[0.12] px-2.5 py-1 text-[11px] font-bold text-[#e7efe9]">{result.category} ×{result.multiplier}</span>
+              {result.concealed && <span className="rounded-full bg-white/[0.12] px-2.5 py-1 text-[11px] font-bold text-[#e7efe9]">Self-draw ×2</span>}
+            </div>
+          </Card>
 
-  <p>
-    Base Win: {baseWin}
-  </p>
+          {/* Score breakdown — zebra rows */}
+          <Card className="mb-4">
+            <div className="px-4 pb-2 pt-3.5 font-display text-[15px] font-bold uppercase tracking-[0.04em] text-mj-green">Score Breakdown</div>
+            <div className="h-px bg-mj-line" />
+            <Line label="Base win" value="10" />
+            <Line label={`Flowers × ${flowers}`} value={`+${flowers * 5}`} pos alt />
+            <Line label={`Kong × ${result.kongCount}`} value={`+${result.kongCount * 5}`} pos />
+            <div className="h-px bg-mj-line" />
+            <Line label="Subtotal" value={String(result.subtotal)} bold />
+            <Line label="Category multiplier" value={`×${result.multiplier}`} accent alt />
+            {result.concealed && <Line label="Concealed self-draw" value="×2" accent />}
+            <div className="h-px bg-mj-line" />
+            <div className="flex items-center justify-between bg-mj-greensoft px-4 py-3.5">
+              <span className="font-display text-base font-bold uppercase tracking-[0.03em] text-mj-green">Grand Total</span>
+              <span className="font-display text-2xl font-bold text-mj-green">{result.handValue}</span>
+            </div>
+          </Card>
 
-  <p>
-    Flowers: +{flowerPoints}
-  </p>
+          {/* Settlement — winner gets a tile icon; others get an aligning spacer */}
+          <Card className="mb-4">
+            <PanelHeader>Settlement</PanelHeader>
+            <ul className="px-4 py-1">
+              {result.settlement.map((e, i, arr) => {
+                const isWinner = e.player === winnerName;
+                return (
+                  <li key={e.player} className={`flex items-center gap-3 py-2.5 ${i < arr.length - 1 ? "border-b border-mj-line/70" : ""}`}>
+                    {isWinner ? <MahjongTile char="🀄" size="sm" /> : <span aria-hidden className="h-8 w-7 shrink-0" />}
+                    <span className="flex-1 text-[15px] font-extrabold">
+                      {e.player}
+                      {isWinner && <span className="ml-1 text-[11px] font-medium text-mj-muted">· winner</span>}
+                    </span>
+                    <span className={`font-display font-bold ${isWinner ? "text-[18px]" : "text-[17px]"} ${e.points > 0 ? "text-mj-pos" : e.points < 0 ? "text-mj-neg" : "text-mj-muted"}`}>
+                      {e.points > 0 ? `+${e.points}` : e.points < 0 ? `−${Math.abs(e.points)}` : "0"}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </Card>
 
-  <p>
-    Kongs: +{kongPoints}
-  </p>
-
-  <hr className="my-4" />
-
-  <p className="font-bold">
-    Subtotal: {subtotal}
-  </p>
-
-  <hr className="my-4" />
-
-    <p>
-    <strong>
-      Multiplier (×{categoryMultiplier}):
-    </strong>{" "}
-    {scoringCategory}
-  </p>
-{penaltyPayer && (
-  <p>
-    <strong>
-      Penalty Rule:
-    </strong>{" "}
-    {penaltyPayer} fed
-    3+ melds and becomes
-    the sole payer.
-  </p>
-)}
-{concealedSelfDraw && (
-  <p>
-    <strong>
-      Multiplier (×2):
-    </strong>{" "}
-    Concealed Self Draw
-  </p>
-)}
-
-  {rawScore > 200 && (
-    <>
-      <hr className="my-4" />
-
-      <p>
-        Raw Score: {rawScore}
-      </p>
-
-      <p>
-        Cap Applied: 200
-      </p>
-    </>
-  )}
-
-  <hr className="my-4" />
-
- <p className="text-2xl font-bold">
-    Grand Total: {handValue}
-  </p>
-<hr className="my-4" />
-
-<h3 className="mb-4 font-semibold">
-  Settlement
-</h3>
-
-<div className="space-y-2">
-  {settlement.map((entry) => (
-    <div
-      key={entry.player}
-      className="flex justify-between"
-    >
-      <span>
-        {entry.player}
-      </span>
-
-      <span
-        className={
-          entry.points > 0
-            ? "font-semibold"
-            : ""
-        }
-      >
-        {entry.points > 0
-          ? `+${entry.points}`
-          : entry.points}
-      </span>
+          {/* Single full-width save (matches Concept 10) */}
+          <Button
+            className="w-full"
+            onClick={async () => {
+              await onSave({
+                winnerId: winner, winType,
+                discarderId: selected.find((p) => p.name === discarder)?.player_id ?? null,
+                flowers, kongs: result.kongCount, score: result.handValue,
+                handData: {
+                  flowers, kongCount: result.kongCount, subtotal: result.subtotal, categoryMultiplier: result.multiplier,
+                  scoringCategory: result.category, handValue: result.handValue, winType, discarder,
+                  participants: selected.map((p) => p.name), settlement: result.settlement,
+                  meld1Tiles: melds[0], meld2Tiles: melds[1], meld3Tiles: melds[2], meld4Tiles: melds[3], pairTiles: pair,
+                },
+              });
+            }}
+          >
+            Save &amp; Update Leaderboard
+          </Button>
+        </>
+      )}
     </div>
-  ))}
-</div>
-</div>
-
-    <div className="flex gap-2">
-      <button
-        onClick={() => setStep(3)}
-        className="rounded border px-4 py-2"
-      >
-        Back
-      </button>
-
-     <button
-  disabled={isSaving}
-  onClick={async () => {
-    console.log(
-      "SAVE BUTTON CLICKED"
-    );
-
-    if (isSaving) {
-  return;
-}
-
-setIsSaving(true);
-
-try {
-  const payload = {
-    winnerId: winner,
-    winType,
-    discarderId:
-      otherPlayers.find(
-        (p) =>
-          p.players.name ===
-          discarder
-      )?.player_id ?? null,
-    flowers,
-    kongs: kongCount,
-    score: handValue,
-    handData: {
-  flowers,
-  kongCount,
-  subtotal,
-  categoryMultiplier,
-  scoringCategory,
-  rawScore,
-  handValue,
-  winType,
-  discarder,
-  participants:
-    selectedParticipants.map(
-      (p) => p.players.name
-    ),
-  settlement,
-  meld1Tiles,
-  meld2Tiles,
-  meld3Tiles,
-  meld4Tiles,
-  pairTiles,
-  meld1Source,
-  meld2Source,
-  meld3Source,
-  meld4Source,
-  pairSource,
-},
-  };
-
-  if (initialGame) {
-    await updateGame({
-  gameId: initialGame.id,
-  sessionId,
-  ...payload,
-});
-    await recalculateStats();
-
-    router.push(
-      `/sessions/${sessionId}/history`
-    );
-  } else {
-    await saveGame({
-      sessionId,
-      ...payload,
-    });
-
-    router.push(
-      `/sessions/${sessionId}`
-    );
-  }
-} catch (error) {
-  console.error(error);
-
-  setIsSaving(false);
-
-  alert("Save Failed");
-}
-  }}
-  className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
->
- {isSaving
-  ? "Saving..."
-  : initialGame
-  ? "Save Changes"
-  : "Save & Update Leaderboard"}
-</button>
-    </div>
-  </div>
-)}
-
-</div>
-
-);
+  );
 }
