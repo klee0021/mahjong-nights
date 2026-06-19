@@ -790,11 +790,27 @@ return (
 
   {step === 3 && !editingSection && (
   <>
-  <StepHead
-    n="3"
-    title="Winning Hand"
-    right={`Winner: ${winnerName}`}
-  />
+  <div className="mb-3.5 flex items-end justify-between px-0.5">
+  <div>
+    <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-mj-neg">
+      Step 3 of 4
+    </div>
+
+    <div className="font-display text-xl font-bold text-mj-green">
+      Winning Hand
+    </div>
+  </div>
+
+  <div className="text-right">
+    <div className="text-xs text-mj-muted">
+      Winner
+    </div>
+
+    <div className="text-[15px] font-extrabold">
+      {winnerName}
+    </div>
+  </div>
+</div>
 
 
 <Card className="mb-3 p-3.5">
