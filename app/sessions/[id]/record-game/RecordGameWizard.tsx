@@ -1392,12 +1392,18 @@ return (
             onClick={async () => {
               const payload = {
                 winnerId: winner, winType,
-                discarderId: selected.find((p) => p.name === discarder)?.player_id ?? null,
+                discarderId:
+  otherPlayers.find(
+    (p) => p.players.name === discarder
+  )?.player_id ?? null,
                 flowers, kongs: result.kongCount, score: result.handValue,
                 handData: {
                   flowers, kongCount: result.kongCount, subtotal: result.subtotal, categoryMultiplier: result.multiplier,
                   scoringCategory: result.category, handValue: result.handValue, winType, discarder,
-                  participants: selected.map((p) => p.name), settlement: result.settlement,
+                  participants:
+  selectedParticipants.map(
+    (p) => p.players.name
+  ), settlement: result.settlement,
                   meld1Tiles: melds[0], meld2Tiles: melds[1], meld3Tiles: melds[2], meld4Tiles: melds[3], pairTiles: pair,
                 },
               };
