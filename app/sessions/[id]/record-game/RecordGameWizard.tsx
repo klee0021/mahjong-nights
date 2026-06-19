@@ -1369,14 +1369,30 @@ return (
             <PanelHeader>Settlement</PanelHeader>
             <ul className="px-4 py-1">
               {result.settlement.map((e, i, arr) => {
-                const isWinner = e.player === winnerName;
-                return (
+  const isWinner =
+    e.player === winnerName;
+
+  const isPenalty =
+    e.player === penaltyPayer;
+
+  return (
                   <li key={e.player} className={`flex items-center gap-3 py-2.5 ${i < arr.length - 1 ? "border-b border-mj-line/70" : ""}`}>
                     {isWinner ? <MahjongTile char="🀄" size="sm" /> : <span aria-hidden className="h-8 w-7 shrink-0" />}
                     <span className="flex-1 text-[15px] font-extrabold">
-                      {e.player}
-                      {isWinner && <span className="ml-1 text-[11px] font-medium text-mj-muted">· winner</span>}
-                    </span>
+  {e.player}
+
+  {isWinner && (
+    <span className="ml-1 text-[11px] font-medium text-mj-muted">
+      · winner
+    </span>
+  )}
+
+  {isPenalty && (
+    <span className="ml-1 text-[11px] font-medium text-mj-muted">
+      · feeding penalty
+    </span>
+  )}
+</span>
                     <span className={`font-display font-bold ${isWinner ? "text-[18px]" : "text-[17px]"} ${e.points > 0 ? "text-mj-pos" : e.points < 0 ? "text-mj-neg" : "text-mj-muted"}`}>
                       {e.points > 0 ? `+${e.points}` : e.points < 0 ? `−${Math.abs(e.points)}` : "0"}
                     </span>
