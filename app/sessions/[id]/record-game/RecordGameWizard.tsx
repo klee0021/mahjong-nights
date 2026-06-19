@@ -11,6 +11,7 @@ import {
   OptionButton,
   Indicator,
 } from "@/src/components/ui/primitives";
+import { MahjongTile } from "@/src/components/mj/MahjongTile";
 
 type Participant = {
 player_id: string;
@@ -59,22 +60,22 @@ const StepHead = ({
   title: string;
   right?: string;
 }) => (
-  <div className="mb-3.5 flex items-end justify-between">
-    <div>
-      <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-mj-neg">
-        Step {n} of 4
-      </div>
+  <div className="mb-4">
+    <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-mj-neg">
+      Step {n} of 4
+    </div>
 
+    <div className="mt-1 flex items-center justify-between">
       <div className="font-display text-xl font-bold text-mj-green">
         {title}
       </div>
-    </div>
 
-    {right && (
-      <span className="text-[13px] font-extrabold text-mj-green">
-        {right}
-      </span>
-    )}
+      {right && (
+        <span className="text-[13px] font-extrabold text-mj-green">
+          {right}
+        </span>
+      )}
+    </div>
   </div>
 );
 export default function RecordGameWizard({
@@ -679,65 +680,59 @@ return (
 )}
 
   {step === 2 && (
-    <div className="rounded-lg border bg-white p-6 shadow">
-      <h2 className="mb-4 text-2xl font-semibold">
-        Step 2: Select Winner
-      </h2>
+  <>
+    <StepHead n="2" title="Who Won?" />
 
-      <div className="space-y-2">
-        {selectedParticipants
-  .slice()
-  .sort((a, b) =>
-    a.players.name.localeCompare(
-      b.players.name
-    )
-  )
-  .map(
-          (participant) => (
-            <label
-              key={participant.player_id}
-              className="flex items-center gap-3"
-            >
-              <input
-                type="radio"
-                name="winner"
-                checked={
-                  winner ===
-                  participant.player_id
-                }
-                onChange={() =>
-                  setWinner(
-                    participant.player_id
-                  )
-                }
-              />
+    <div className="flex flex-col gap-2.5">
+      {selectedParticipants.map((p) => {
+        const on = winner === p.player_id;
 
-              <span>
-                {participant.players.name}
-              </span>
-            </label>
-          )
-        )}
-            </div>
+        return (
+          <OptionButton
+            key={p.player_id}
+            onClick={() => setWinner(p.player_id)}
+            className={`gap-3 rounded-2xl px-4 py-3.5 ${
+              on
+                ? "border-[1.5px] border-mj-green bg-mj-greensoft"
+                : "border border-mj-line bg-mj-card"
+            }`}
+          >
+            <Indicator
+  className={`h-6 w-6 rounded-lg text-sm text-white ${
+    on
+      ? "bg-mj-green"
+      : "border-[1.5px] border-[#c4bca6] bg-white"
+  }`}
+>
+  {on ? "✓" : ""}
+</Indicator>
 
-<div className="mt-6 flex gap-2">
-        <button
-          onClick={() => setStep(1)}
-          className="rounded border px-4 py-2"
-        >
-          Back
-        </button>
-
-        <button
-          disabled={!winner}
-          onClick={() => setStep(3)}
-          className="rounded border px-4 py-2 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+            <span className="flex-1 font-extrabold">
+              {p.players.name}
+            </span>
+          </OptionButton>
+        );
+      })}
     </div>
-  )}
+
+    <div className="mt-5 flex gap-3">
+      <Button
+        variant="secondary"
+        onClick={() => setStep(1)}
+      >
+        Back
+      </Button>
+
+      <Button
+        className="flex-1"
+        disabled={!winner}
+        onClick={() => setStep(3)}
+      >
+        Next →
+      </Button>
+    </div>
+  </>
+)}
 
   {step === 3 && !editingSection && (
   <div className="rounded-lg border bg-white p-6 shadow">
