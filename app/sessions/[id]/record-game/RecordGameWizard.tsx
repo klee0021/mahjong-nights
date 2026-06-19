@@ -793,7 +793,7 @@ return (
 
   {step === 3 && !editingSection && (
   <>
-  <div className="mb-4 flex items-end justify-between px-0.5">
+  <div className="mb-4 flex items-start justify-between">
   <div>
     <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-mj-neg">
 
@@ -806,7 +806,7 @@ return (
 </div>
   </div>
 
-  <div className="text-right">
+  <div className="mt-2 text-right">
     <div className="text-xs text-mj-muted">
       Winner
     </div>
