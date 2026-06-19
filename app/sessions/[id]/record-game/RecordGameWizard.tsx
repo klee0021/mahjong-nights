@@ -7,6 +7,8 @@ import { updateGame } from "../actions/updateGame";
 import MeldEditor from "@/src/components/MeldEditor";
 import { recalculateStats } from "@/app/players/actions/recalculateStats";
 import {
+  Card,
+  PanelHeader,
   Button,
   OptionButton,
   Indicator,
@@ -735,275 +737,381 @@ return (
 )}
 
   {step === 3 && !editingSection && (
-  <div className="rounded-lg border bg-white p-6 shadow">
-    <h2 className="mb-4 text-2xl font-semibold">
-  {initialGame
-    ? "Step 1: Edit Hand"
-    : "Step 3: Winning Hand"}
-</h2>
+  <>
+  <StepHead
+    n="3"
+    title="Winning Hand"
+    right={`Winner: ${winnerName}`}
+  />
 
 
-<div className="mb-4 rounded border p-4">
-  <div>
-  <strong>
-    Meld 1
-    {detectMeldType(meld1Tiles)
-      ? ` (${detectMeldType(meld1Tiles)})`
-      : ""}
-  </strong>
-</div>
+<Card className="mb-3 p-3.5">
+  <div className="mb-2 flex items-center justify-between">
+    <div className="flex items-center gap-2">
+      <span className="text-sm font-extrabold">
+        Meld 1
+      </span>
 
-  {meld1Tiles.length > 0 && (
-  <div className="mt-2 text-4xl">
-    {meld1Tiles.join(" ")}
-  </div>
-)}
-
-{meld1Tiles.length > 0 && (
-  <div className="mt-2 text-sm text-gray-500">
-    {formatSource(meld1Source)}
-  </div>
-)}
-  <button
-    onClick={() =>
-      setEditingSection("meld1")
-    }
-    className="mt-3 rounded border px-3 py-1 text-sm"
-  >
-    Edit
-  </button>
-</div>
-<div className="mb-4 rounded border p-4">
-  <div>
-  <strong>
-    Meld 2
-    {detectMeldType(meld2Tiles)
-      ? ` (${detectMeldType(meld2Tiles)})`
-      : ""}
-  </strong>
-</div>
-
-  {meld1Tiles.length > 0 && (
-  <div className="mt-2 text-4xl">
-    {meld2Tiles.join(" ")}
-  </div>
-)}
-
-{meld2Tiles.length > 0 && (
-  <div className="mt-2 text-sm text-gray-500">
-    {formatSource(meld2Source)}
-  </div>
-)}
-
-  <button
-  onClick={() =>
-    setEditingSection("meld2")
-  }
-  className="mt-3 rounded border px-3 py-1 text-sm"
->
-  Edit
-</button>
-</div>
-
-<div className="mb-4 rounded border p-4">
-  <div>
-  <strong>
-    Meld 3
-    {detectMeldType(meld3Tiles)
-      ? ` (${detectMeldType(meld3Tiles)})`
-      : ""}
-  </strong>
-</div>
-
-  {meld1Tiles.length > 0 && (
-  <div className="mt-2 text-4xl">
-    {meld3Tiles.join(" ")}
-  </div>
-)}
-
-{meld3Tiles.length > 0 && (
-  <div className="mt-2 text-sm text-gray-500">
-    {formatSource(meld3Source)}
-  </div>
-)}
-
-  <button
-  onClick={() =>
-    setEditingSection("meld3")
-  }
-  className="mt-3 rounded border px-3 py-1 text-sm"
->
-  Edit
-</button>
-</div>
-
-<div className="mb-4 rounded border p-4">
-  <div>
-  <strong>
-    Meld 4
-    {detectMeldType(meld4Tiles)
-      ? ` (${detectMeldType(meld4Tiles)})`
-      : ""}
-  </strong>
-</div>
-
-  {meld1Tiles.length > 0 && (
-  <div className="mt-2 text-4xl">
-    {meld4Tiles.join(" ")}
-  </div>
-)}
-
-{meld4Tiles.length > 0 && (
-  <div className="mt-2 text-sm text-gray-500">
-    {formatSource(meld4Source)}
-  </div>
-)}
-
-  <button
-  onClick={() =>
-    setEditingSection("meld4")
-  }
-  className="mt-3 rounded border px-3 py-1 text-sm"
->
-  Edit
-</button>
-</div>
-
-<div className="mb-4 rounded border p-4">
-  <div>
-  <strong>Pair</strong>
-</div>
-
-  {pairTiles.length > 0 && (
-  <div className="mt-2 text-4xl">
-    {pairTiles.join(" ")}
-  </div>
-)}
-
-  {pairTiles.length > 0 && (
-  <div className="mt-2 text-sm text-gray-500">
-    {formatSource(pairSource)}
-  </div>
-)}
-
-  <button
-    onClick={() =>
-      setEditingSection("pair")
-    }
-    className="mt-3 rounded border px-3 py-1 text-sm"
-  >
-    Edit
-  </button>
-</div>
-
-<div className="mb-4 rounded border p-4">
-  <strong>Flowers</strong>
-
-  <div className="mt-3 flex items-center gap-3">
-    <button
-      onClick={() =>
-        setFlowers(
-          Math.max(0, flowers - 1)
-        )
-      }
-      className="rounded border px-3 py-1"
-    >
-      −
-    </button>
-
-    <span className="text-xl font-semibold">
-      {flowers}
-    </span>
-
-    <button
-      onClick={() =>
-        setFlowers(
-          Math.min(8, flowers + 1)
-        )
-      }
-      className="rounded border px-3 py-1"
-    >
-      +
-    </button>
-  </div>
-
-  <p className="mt-2 text-sm text-gray-500">
-    +5 points each
-  </p>
-</div>
-
-<div className="mb-4 rounded border p-4">
-  <strong>Winning Method</strong>
-
-  <div className="mt-3 space-y-2">
-    <label className="block">
-      <input
-        type="radio"
-        checked={
-          winType === "self-draw"
-        }
-        onChange={() => {
-          setWinType("self-draw");
-          setDiscarder("");
-        }}
-      />
-      {" "}Self Draw
-    </label>
-
-    {otherPlayers.map((player) => (
-      <label
-        key={player.player_id}
-        className="block"
-      >
-        <input
-          type="radio"
-          checked={
-            winType === "claimed" &&
-            discarder ===
-              player.players.name
-          }
-          onChange={() => {
-            setWinType("claimed");
-            setDiscarder(
-              player.players.name
-            );
-          }}
-        />
-        {" "}Claimed from{" "}
-        {player.players.name}
-      </label>
-    ))}
-  </div>
-</div>
-
-<div className="mt-6">
-  <p className="mb-4 text-lg font-semibold">
-    {handValid
-      ? "✅ Hand Valid"
-      : "❌ Hand Invalid"}
-  </p>
-
- <div className="flex gap-2">
-  {!initialGame && (
-    <button
-      onClick={() => setStep(2)}
-      className="rounded border px-4 py-2"
-    >
-      Back
-    </button>
-  )}
-
-  <button
-    disabled={!handValid}
-    onClick={() => setStep(4)}
-    className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-  >
-    Calculate Points
-  </button>
-</div>
-</div>
-
+      {detectMeldType(meld1Tiles) && (
+        <span className="rounded-full bg-mj-greensoft px-2 py-0.5 text-[10px] font-extrabold text-mj-pos">
+          {detectMeldType(meld1Tiles).toUpperCase()}
+        </span>
+      )}
     </div>
+
+    <button
+      type="button"
+      onClick={() => setEditingSection("meld1")}
+      className="text-[13px] font-bold text-mj-green"
+    >
+      Edit
+    </button>
+  </div>
+
+  {meld1Tiles.length ? (
+    <>
+      <div className="text-4xl">
+        {meld1Tiles.join(" ")}
+      </div>
+
+      <div className="mt-2 text-xs text-mj-muted">
+        {formatSource(meld1Source)}
+      </div>
+    </>
+  ) : (
+    <span className="text-xs text-mj-muted">
+      Tap edit to add tiles
+    </span>
+  )}
+</Card>
+<Card className="mb-3 p-3.5">
+  <div className="mb-2 flex items-center justify-between">
+    <div className="flex items-center gap-2">
+      <span className="text-sm font-extrabold">
+        Meld 2
+      </span>
+
+      {detectMeldType(meld2Tiles) && (
+        <span className="rounded-full bg-mj-greensoft px-2 py-0.5 text-[10px] font-extrabold text-mj-pos">
+          {detectMeldType(meld2Tiles).toUpperCase()}
+        </span>
+      )}
+    </div>
+
+    <button
+      type="button"
+      onClick={() => setEditingSection("meld2")}
+      className="text-[13px] font-bold text-mj-green"
+    >
+      Edit
+    </button>
+  </div>
+
+  {meld2Tiles.length ? (
+    <>
+      <div className="text-4xl">
+        {meld2Tiles.join(" ")}
+      </div>
+
+      <div className="mt-2 text-xs text-mj-muted">
+        {formatSource(meld2Source)}
+      </div>
+    </>
+  ) : (
+    <span className="text-xs text-mj-muted">
+      Tap edit to add tiles
+    </span>
+  )}
+</Card>
+
+<Card className="mb-3 p-3.5">
+  <div className="mb-2 flex items-center justify-between">
+    <div className="flex items-center gap-2">
+      <span className="text-sm font-extrabold">
+        Meld 3
+      </span>
+
+      {detectMeldType(meld3Tiles) && (
+        <span className="rounded-full bg-mj-greensoft px-2 py-0.5 text-[10px] font-extrabold text-mj-pos">
+          {detectMeldType(meld3Tiles).toUpperCase()}
+        </span>
+      )}
+    </div>
+
+    <button
+      type="button"
+      onClick={() => setEditingSection("meld3")}
+      className="text-[13px] font-bold text-mj-green"
+    >
+      Edit
+    </button>
+  </div>
+
+  {meld3Tiles.length ? (
+    <>
+      <div className="text-4xl">
+        {meld3Tiles.join(" ")}
+      </div>
+
+      <div className="mt-2 text-xs text-mj-muted">
+        {formatSource(meld3Source)}
+      </div>
+    </>
+  ) : (
+    <span className="text-xs text-mj-muted">
+      Tap edit to add tiles
+    </span>
+  )}
+</Card>
+<Card className="mb-3 p-3.5">
+  <div className="mb-2 flex items-center justify-between">
+    <div className="flex items-center gap-2">
+      <span className="text-sm font-extrabold">
+        Meld 4
+      </span>
+
+      {detectMeldType(meld4Tiles) && (
+        <span className="rounded-full bg-mj-greensoft px-2 py-0.5 text-[10px] font-extrabold text-mj-pos">
+          {detectMeldType(meld4Tiles).toUpperCase()}
+        </span>
+      )}
+    </div>
+
+    <button
+      type="button"
+      onClick={() => setEditingSection("meld4")}
+      className="text-[13px] font-bold text-mj-green"
+    >
+      Edit
+    </button>
+  </div>
+
+  {meld4Tiles.length ? (
+    <>
+      <div className="text-4xl">
+        {meld4Tiles.join(" ")}
+      </div>
+
+      <div className="mt-2 text-xs text-mj-muted">
+        {formatSource(meld4Source)}
+      </div>
+    </>
+  ) : (
+    <span className="text-xs text-mj-muted">
+      Tap edit to add tiles
+    </span>
+  )}
+</Card>
+<div className="mb-3 flex gap-2.5">
+
+  {/* Pair */}
+  <div className="flex-1">
+    <Card className="h-full p-3.5">
+      <div className="mb-2 flex items-center justify-between">
+        <span className="text-sm font-extrabold">
+          Pair
+        </span>
+
+        <button
+          type="button"
+          onClick={() => setEditingSection("pair")}
+          className="text-[13px] font-bold text-mj-green"
+        >
+          Edit
+        </button>
+      </div>
+
+      {pairTiles.length ? (
+        <>
+          <div className="text-4xl">
+            {pairTiles.join(" ")}
+          </div>
+
+          <div className="mt-2 text-xs text-mj-muted">
+            {formatSource(pairSource)}
+          </div>
+        </>
+      ) : (
+        <span className="text-xs text-mj-muted">
+          Tap edit to add tiles
+        </span>
+      )}
+    </Card>
+  </div>
+
+  {/* Flowers */}
+  <Card className="w-[130px] shrink-0 p-3.5">
+    <div className="mb-3 flex justify-between">
+      <span className="text-sm font-extrabold">
+        Flowers
+      </span>
+
+      <span className="-translate-y-0.5 rounded-full bg-mj-greensoft px-2 py-1 text-xs font-extrabold text-mj-pos">
+  +{flowerPoints}
+</span>
+    </div>
+
+    <div className="flex items-center justify-between">
+      <button
+        type="button"
+        onClick={() =>
+          setFlowers(Math.max(0, flowers - 1))
+        }
+        className="flex h-8 w-8 items-center justify-center rounded-lg border border-mj-line bg-white text-lg font-bold"
+      >
+        −
+      </button>
+
+      <div className="text-2xl font-bold text-mj-green">
+  {flowers}
+</div>
+
+      <button
+        type="button"
+        onClick={() =>
+          setFlowers(Math.min(8, flowers + 1))
+        }
+        className="flex h-8 w-8 items-center justify-center rounded-lg border border-mj-line bg-white text-lg font-bold"
+      >
+        +
+      </button>
+    </div>
+  </Card>
+
+</div>
+
+<Card className="mb-3 p-3.5">
+  <div className="mb-3 text-sm font-extrabold">
+    Winning Method
+  </div>
+
+  <div className="space-y-2">
+
+    <OptionButton
+      onClick={() => {
+        setWinType("self-draw");
+        setDiscarder("");
+      }}
+      className={`gap-3 rounded-2xl px-4 py-3 ${
+        winType === "self-draw"
+          ? "border-[1.5px] border-mj-green bg-mj-greensoft"
+          : "border border-mj-line bg-mj-card"
+      }`}
+    >
+      <Indicator
+        className={`h-6 w-6 rounded-lg text-sm text-white ${
+          winType === "self-draw"
+            ? "bg-mj-green"
+            : "border-[1.5px] border-[#c4bca6] bg-white"
+        }`}
+      >
+        {winType === "self-draw" ? "✓" : ""}
+      </Indicator>
+
+      <div className="flex-1 text-left">
+        <div className="font-extrabold">
+          Self Draw
+        </div>
+
+        <div className="text-xs text-mj-muted">
+          All opponents pay
+        </div>
+      </div>
+    </OptionButton>
+
+    {otherPlayers.map((player) => {
+      const selected =
+        winType === "claimed" &&
+        discarder === player.players.name;
+
+      return (
+        <OptionButton
+          key={player.player_id}
+          onClick={() => {
+            setWinType("claimed");
+            setDiscarder(player.players.name);
+          }}
+          className={`gap-3 rounded-2xl px-4 py-3 ${
+            selected
+              ? "border-[1.5px] border-mj-green bg-mj-greensoft"
+              : "border border-mj-line bg-mj-card"
+          }`}
+        >
+          <Indicator
+            className={`h-6 w-6 rounded-lg text-sm text-white ${
+              selected
+                ? "bg-mj-green"
+                : "border-[1.5px] border-[#c4bca6] bg-white"
+            }`}
+          >
+            {selected ? "✓" : ""}
+          </Indicator>
+
+          <div className="flex-1 text-left">
+            <div className="font-extrabold">
+              Claimed from {player.players.name}
+            </div>
+
+            <div className="text-xs text-mj-muted">
+              {player.players.name} pays
+            </div>
+          </div>
+        </OptionButton>
+      );
+    })}
+  </div>
+</Card>
+
+<Card className="mt-4 p-4">
+  <div className="mb-4 flex items-center gap-3">
+
+    <Indicator
+      className={`h-8 w-8 rounded-xl text-white ${
+        handValid
+          ? "bg-mj-green"
+          : "bg-mj-neg"
+      }`}
+    >
+      {handValid ? "✓" : "!"}
+    </Indicator>
+
+    <div>
+      <div className="font-extrabold">
+        {handValid
+          ? "Hand Valid"
+          : "Hand Incomplete"}
+      </div>
+
+      <div className="text-xs text-mj-muted">
+        {handValid
+          ? "Ready to calculate points."
+          : "Complete all melds and winning method."}
+      </div>
+    </div>
+
+  </div>
+
+  <div className="flex gap-3">
+    {!initialGame && (
+      <Button
+        variant="secondary"
+        onClick={() => setStep(2)}
+      >
+        Back
+      </Button>
+    )}
+
+    <Button
+      className="flex-1"
+      disabled={!handValid}
+      onClick={() => setStep(4)}
+    >
+      Calculate Points →
+    </Button>
+  </div>
+</Card>
+
+    </>
 )}
 
  {step === 3 && editingSection === "meld1" && (
