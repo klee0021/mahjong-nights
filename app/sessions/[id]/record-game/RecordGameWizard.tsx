@@ -1390,7 +1390,7 @@ return (
           <Button
             className="w-full"
             onClick={async () => {
-              await onSave({
+              const payload = {
                 winnerId: winner, winType,
                 discarderId: selected.find((p) => p.name === discarder)?.player_id ?? null,
                 flowers, kongs: result.kongCount, score: result.handValue,
@@ -1400,7 +1400,29 @@ return (
                   participants: selected.map((p) => p.name), settlement: result.settlement,
                   meld1Tiles: melds[0], meld2Tiles: melds[1], meld3Tiles: melds[2], meld4Tiles: melds[3], pairTiles: pair,
                 },
-              });
+              };
+if (initialGame) {
+  await updateGame({
+    gameId: initialGame.id,
+    sessionId,
+    ...payload,
+  });
+
+  await recalculateStats();
+
+  router.push(
+    `/sessions/${sessionId}/history`
+  );
+} else {
+  await saveGame({
+    sessionId,
+    ...payload,
+  });
+
+  router.push(
+    `/sessions/${sessionId}`
+  );
+}
             }}
           >
             Save &amp; Update Leaderboard
