@@ -8,6 +8,8 @@ import {
 } from "@/src/components/ui/primitives";
 import { MahjongTile } from "@/src/components/mj/MahjongTile";
 import { deletePlayer } from "../actions/deletePlayer";
+import { updatePlayer } from "../actions/updatePlayer";
+import InlineRenamePlayer from "../InlineRenamePlayer";
 import type { Player, PlayerStats, SessionSummary } from "@/src/lib/types";
 
 const Stat = ({ label, value, pos }: { label: string; value: string; pos?: boolean }) => (
@@ -35,9 +37,18 @@ export function PlayerDetailView({
       <div className="mb-5 flex items-center gap-3">
         <span className="grid h-14 w-14 place-items-center rounded-full bg-mj-green font-display text-2xl font-bold text-[#f4efe2]">{player.name[0]}</span>
         <div>
-          <h1 className="font-display text-3xl font-bold text-mj-green">{player.name}</h1>
-          <p className="text-xs font-semibold text-mj-muted">{player.wins} wins</p>
-        </div>
+  <InlineRenamePlayer
+    playerName={player.name}
+    action={updatePlayer.bind(
+      null,
+      playerId
+    )}
+  />
+
+  <p className="text-xs font-semibold text-mj-muted">
+    {player.wins} wins
+  </p>
+</div>
       </div>
 
       <Card className="mb-4">
