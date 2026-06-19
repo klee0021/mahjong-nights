@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Pencil, Check } from "lucide-react";
+import { Pencil } from "lucide-react";
 
 type Props = {
   playerName: string;
@@ -44,29 +44,47 @@ export default function InlineRenamePlayer({
 
   return (
     <form
-      action={action}
-      className="flex items-center gap-3"
-    >
+  action={async (formData) => {
+    await action(formData);
+    setEditing(false);
+  }}
+  className="inline-block"
+>
       <input
-        ref={inputRef}
-        name="name"
-        defaultValue={playerName}
-        className="bg-transparent text-3xl font-bold text-mj-green outline-none"
-        autoFocus
-        onKeyDown={(event) => {
-          if (event.key === "Escape") {
-            event.preventDefault();
-            setEditing(false);
-          }
-        }}
-      />
 
-      <button
-        type="submit"
-        className="text-gray-500 hover:text-black"
-      >
-        <Check size={20} />
-      </button>
+  ref={inputRef}
+
+  name="name"
+
+  defaultValue={playerName}
+
+  className="w-[10ch] bg-transparent text-3xl font-bold text-mj-green outline-none"
+
+  autoFocus
+
+  onKeyDown={(event) => {
+
+    if (event.key === "Escape") {
+
+      event.preventDefault();
+
+      setEditing(false);
+
+    }
+
+  }}
+
+/>
+
+<button
+
+  type="submit"
+
+  className="hidden"
+
+  aria-hidden
+
+/>
     </form>
   );
 }

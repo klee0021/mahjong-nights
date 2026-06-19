@@ -42,16 +42,10 @@ standings: Standing[];
     <AppShell>
       <Link href="/sessions" className="mb-3 inline-flex items-center gap-1 text-[13px] font-bold text-mj-muted">‹ Sessions</Link>
       <div className="mb-4">
-  {isActive ? (
-    <InlineRenameSession
-      sessionName={name}
-      action={renameSession.bind(null, id)}
-    />
-  ) : (
-    <h1 className="font-display text-2xl font-bold text-mj-green">
-      {name}
-    </h1>
-  )}
+  <InlineRenameSession
+    sessionName={name}
+    action={renameSession.bind(null, id)}
+  />
 </div>
 
       <Card className="mb-4">

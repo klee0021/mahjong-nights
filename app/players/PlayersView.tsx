@@ -14,26 +14,65 @@ export default function PlayersView({
     useState<"score" | "wins" | "name">(
       "score"
     );
-const scoreRanks = new Map(
-  [...players]
-    .sort(
-      (a, b) =>
-        b.total_score - a.total_score
-    )
-    .map((player, index) => [
+const scoreRanks = new Map<string, number>();
+
+[...players]
+  .sort((a, b) => {
+    if (
+      b.total_score !==
+      a.total_score
+    ) {
+      return (
+        b.total_score -
+        a.total_score
+      );
+    }
+
+    return a.name.localeCompare(
+      b.name
+    );
+  })
+  .forEach((player, index, arr) => {
+    let currentRank = 0;
+
+[...players]
+  .sort((a, b) => {
+    if (b.total_score !== a.total_score) {
+      return b.total_score - a.total_score;
+    }
+
+    return a.name.localeCompare(b.name);
+  })
+  .forEach((player, index, arr) => {
+    if (
+      index === 0 ||
+      player.total_score !==
+        arr[index - 1].total_score
+    ) {
+      currentRank++;
+    }
+
+    scoreRanks.set(
       player.id,
-      index + 1,
-    ])
-);
+      currentRank
+    );
+  });
+  });
 
   const sortedPlayers = useMemo(() => {
     const copy = [...players];
 
     switch (orderBy) {
       case "wins":
-        return copy.sort(
-          (a, b) => b.wins - a.wins
-        );
+  return copy.sort((a, b) => {
+    if (b.wins !== a.wins) {
+      return b.wins - a.wins;
+    }
+
+    return a.name.localeCompare(
+      b.name
+    );
+  });
 
       case "name":
         return copy.sort((a, b) =>
@@ -41,10 +80,21 @@ const scoreRanks = new Map(
         );
 
       default:
-        return copy.sort(
-          (a, b) =>
-            b.total_score - a.total_score
-        );
+  return copy.sort((a, b) => {
+    if (
+      b.total_score !==
+      a.total_score
+    ) {
+      return (
+        b.total_score -
+        a.total_score
+      );
+    }
+
+    return a.name.localeCompare(
+      b.name
+    );
+  });
     }
   }, [players, orderBy]);
 

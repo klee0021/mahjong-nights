@@ -34,9 +34,9 @@ export function PlayerDetailView({
     <AppShell active="players">
       <Link href="/players" className="mb-4 inline-flex items-center gap-1 text-[13px] font-bold text-mj-muted">‹ Players</Link>
 
-      <div className="mb-5 flex items-center gap-3">
-        <span className="grid h-14 w-14 place-items-center rounded-full bg-mj-green font-display text-2xl font-bold text-[#f4efe2]">{player.name[0]}</span>
-        <div>
+      <div className="mb-5 flex items-start gap-3">
+        <span className="shrink-0 grid h-14 w-14 place-items-center rounded-full bg-mj-green font-display text-2xl font-bold text-[#f4efe2]">{player.name[0]}</span>
+        <div className="min-w-0">
   <InlineRenamePlayer
     playerName={player.name}
     action={updatePlayer.bind(

@@ -5,7 +5,6 @@ import {
   useState,
 } from "react";
 import {
-  Check,
   Pencil,
 } from "lucide-react";
 
@@ -72,13 +71,12 @@ const inputRef =
     />
 
     <button
-      type="submit"
-      className="text-gray-500 hover:text-black"
-      aria-label="Save Session Name"
-      title="Save Session Name"
-    >
-      <Check size={20} />
-    </button>
+  type="submit"
+  className="hidden"
+  aria-hidden
+  aria-label="Save Session Name"
+  title="Save Session Name"
+/>
   </form>
   );
 }
