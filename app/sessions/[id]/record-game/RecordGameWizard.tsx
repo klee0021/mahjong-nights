@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { saveGame } from "../actions/saveGame";
 import { updateGame } from "../actions/updateGame";
@@ -131,6 +131,9 @@ const router = useRouter();
 const [step, setStep] = useState(
   initialGame ? 3 : 1
 );
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, [step]);
 const [isSaving, setIsSaving] =
   useState(false);
 
@@ -790,15 +793,17 @@ return (
 
   {step === 3 && !editingSection && (
   <>
-  <div className="mb-3.5 flex items-end justify-between px-0.5">
+  <div className="mb-4 flex items-end justify-between px-0.5">
   <div>
     <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-mj-neg">
-      Step 3 of 4
-    </div>
 
-    <div className="font-display text-xl font-bold text-mj-green">
-      Winning Hand
-    </div>
+  Step {initialGame ? "1" : "3"} of {initialGame ? "2" : "4"}
+
+</div>
+
+    <div className="mt-1 font-display text-xl font-bold text-mj-green">
+  Winning Hand
+</div>
   </div>
 
   <div className="text-right">
@@ -1343,6 +1348,15 @@ return (
 
  {step === 4 && (
         <>
+<div className="mb-4">
+  <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-mj-neg">
+    Step {initialGame ? "2" : "4"} of {initialGame ? "2" : "4"}
+  </div>
+
+  <div className="mt-1 font-display text-xl font-bold text-mj-green">
+    Results
+  </div>
+</div>
           {/* Hero — grand total (中 watermark + sparkle + chips, matches Concept 10) */}
           <Card className="relative mb-4 overflow-hidden bg-mj-green p-6 text-[#f4efe2]">
             <span aria-hidden className="fret fret-tl pointer-events-none" />
@@ -1350,8 +1364,14 @@ return (
             <span aria-hidden className="fret fret-bl pointer-events-none" />
             <span aria-hidden className="fret fret-br pointer-events-none" />
             <span aria-hidden className="pointer-events-none absolute right-3.5 top-2 select-none font-extrabold leading-none text-[#f4efe2] opacity-[0.12]" style={{ fontSize: 90 }}>中</span>
-            <Sparkle className="pointer-events-none absolute bottom-4 left-4 text-[#ef8a7d]" size={15} />
-            <div className="relative text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#9fbcab]">Hand Value · {winnerName} wins</div>
+            <Sparkle
+  className="pointer-events-none absolute bottom-4 left-4 text-[#ef8a7d]"
+  size={15}
+/>
+
+<div className="relative text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#9fbcab]">
+  Hand Value · {winnerName} wins
+</div>
             <div className="relative mt-1.5 flex items-baseline gap-2">
               <span className="font-display text-6xl font-bold leading-none">{result.handValue}</span>
               <span className="text-[15px] text-[#9fbcab]">points</span>
