@@ -1387,52 +1387,97 @@ return (
           </Card>
 
           {/* Single full-width save (matches Concept 10) */}
-          <Button
-            className="w-full"
-            onClick={async () => {
-              const payload = {
-                winnerId: winner, winType,
-                discarderId:
-  otherPlayers.find(
-    (p) => p.players.name === discarder
-  )?.player_id ?? null,
-                flowers, kongs: result.kongCount, score: result.handValue,
-                handData: {
-                  flowers, kongCount: result.kongCount, subtotal: result.subtotal, categoryMultiplier: result.multiplier,
-                  scoringCategory: result.category, handValue: result.handValue, winType, discarder,
-                  participants:
-  selectedParticipants.map(
-    (p) => p.players.name
-  ), settlement: result.settlement,
-                  meld1Tiles: melds[0], meld2Tiles: melds[1], meld3Tiles: melds[2], meld4Tiles: melds[3], pairTiles: pair,
-                },
-              };
-if (initialGame) {
-  await updateGame({
-    gameId: initialGame.id,
-    sessionId,
-    ...payload,
-  });
+          <div className="flex gap-3">
+  <Button
+    variant="secondary"
+    onClick={() => setStep(3)}
+  >
+    Back
+  </Button>
 
-  await recalculateStats();
+  <Button
+    className="flex-1"
+    disabled={isSaving}
+    onClick={async () => {
+      if (isSaving) return;
 
-  router.push(
-    `/sessions/${sessionId}/history`
-  );
-} else {
-  await saveGame({
-    sessionId,
-    ...payload,
-  });
+      setIsSaving(true);
 
-  router.push(
-    `/sessions/${sessionId}`
-  );
-}
-            }}
-          >
-            Save &amp; Update Leaderboard
-          </Button>
+      try {
+        const payload = {
+          winnerId: winner,
+          winType,
+          discarderId:
+            otherPlayers.find(
+              (p) =>
+                p.players.name === discarder
+            )?.player_id ?? null,
+          flowers,
+          kongs: result.kongCount,
+          score: result.handValue,
+          handData: {
+            flowers,
+            kongCount: result.kongCount,
+            subtotal: result.subtotal,
+            categoryMultiplier: result.multiplier,
+            scoringCategory: result.category,
+            handValue: result.handValue,
+            winType,
+            discarder,
+            participants:
+              selectedParticipants.map(
+                (p) => p.players.name
+              ),
+            settlement: result.settlement,
+            meld1Tiles,
+            meld2Tiles,
+            meld3Tiles,
+            meld4Tiles,
+            pairTiles,
+            meld1Source,
+            meld2Source,
+            meld3Source,
+            meld4Source,
+            pairSource,
+          },
+        };
+
+        if (initialGame) {
+          await updateGame({
+            gameId: initialGame.id,
+            sessionId,
+            ...payload,
+          });
+
+          await recalculateStats();
+
+          router.push(
+            `/sessions/${sessionId}/history`
+          );
+        } else {
+          await saveGame({
+            sessionId,
+            ...payload,
+          });
+
+          router.push(
+            `/sessions/${sessionId}`
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        setIsSaving(false);
+        alert("Save Failed");
+      }
+    }}
+  >
+    {isSaving
+      ? "Saving..."
+      : initialGame
+      ? "Save Changes"
+      : "Save & Update Leaderboard"}
+  </Button>
+</div>
         </>
       )}
     </div>
