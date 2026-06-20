@@ -8,6 +8,7 @@ import MeldEditor from "@/src/components/MeldEditor";
 import { recalculateStats } from "@/app/players/actions/recalculateStats";
 import {
   Card,
+  ClickableCard,
   PanelHeader,
   Button,
   OptionButton,
@@ -15,6 +16,8 @@ import {
   Sparkle,
 } from "@/src/components/ui/primitives";
 import { MahjongTile } from "@/src/components/mj/MahjongTile";
+import { BouncyCard } from "@/src/components/ui/BouncyCard";
+import { BouncyButton } from "@/src/components/ui/BouncyButton";
 
 type Participant = {
 player_id: string;
@@ -726,13 +729,13 @@ return (
         })}
     </div>
 
-    <Button
+    <BouncyButton
   className="mt-5 w-full"
   disabled={selectedPlayers.length !== 4}
   onClick={() => setStep(2)}
 >
   Next →
-</Button>
+</BouncyButton>
   </>
 )}
 
@@ -773,20 +776,20 @@ return (
     </div>
 
     <div className="mt-5 flex gap-3">
-      <Button
-        variant="secondary"
-        onClick={() => setStep(1)}
-      >
-        Back
-      </Button>
+      <BouncyButton
+  variant="secondary"
+  onClick={() => setStep(1)}
+>
+  Back
+</BouncyButton>
 
-      <Button
-        className="flex-1"
-        disabled={!winner}
-        onClick={() => setStep(3)}
-      >
-        Next →
-      </Button>
+<BouncyButton
+  className="flex-1 w-full"
+  disabled={!winner}
+  onClick={() => setStep(3)}
+>
+  Next →
+</BouncyButton>
     </div>
   </>
 )}
@@ -818,7 +821,10 @@ return (
 </div>
 
 
-<Card className="mb-3 p-3.5">
+<BouncyCard
+  className="mb-3 p-3.5"
+  onClick={() => setEditingSection("meld1")}
+>
   <div className="mb-2 flex items-center justify-between">
     <div className="flex items-center gap-2">
       <span className="text-sm font-extrabold">
@@ -863,11 +869,15 @@ return (
     </>
   ) : (
     <span className="text-xs text-mj-muted">
-      Tap edit to add tiles
+      Tap to add tiles
     </span>
   )}
-</Card>
-<Card className="mb-3 p-3.5">
+</BouncyCard>
+
+<BouncyCard
+  className="mb-3 p-3.5"
+  onClick={() => setEditingSection("meld2")}
+>
   <div className="mb-2 flex items-center justify-between">
     <div className="flex items-center gap-2">
       <span className="text-sm font-extrabold">
@@ -912,12 +922,15 @@ return (
     </>
   ) : (
     <span className="text-xs text-mj-muted">
-      Tap edit to add tiles
+      Tap to add tiles
     </span>
   )}
-</Card>
+</BouncyCard>
 
-<Card className="mb-3 p-3.5">
+<BouncyCard
+  className="mb-3 p-3.5"
+  onClick={() => setEditingSection("meld3")}
+>
   <div className="mb-2 flex items-center justify-between">
     <div className="flex items-center gap-2">
       <span className="text-sm font-extrabold">
@@ -962,11 +975,16 @@ return (
     </>
   ) : (
     <span className="text-xs text-mj-muted">
-      Tap edit to add tiles
+      Tap to add tiles
     </span>
   )}
-</Card>
-<Card className="mb-3 p-3.5">
+</BouncyCard>
+
+
+<BouncyCard
+  className="mb-3 p-3.5"
+  onClick={() => setEditingSection("meld4")}
+>
   <div className="mb-2 flex items-center justify-between">
     <div className="flex items-center gap-2">
       <span className="text-sm font-extrabold">
@@ -1011,15 +1029,18 @@ return (
     </>
   ) : (
     <span className="text-xs text-mj-muted">
-      Tap edit to add tiles
+      Tap to add tiles
     </span>
   )}
-</Card>
+</BouncyCard>
 <div className="mb-3 flex gap-2.5">
 
   {/* Pair */}
-  <div className="flex-1">
-    <Card className="h-full p-3.5">
+<div className="flex-1">
+  <BouncyCard
+  className="h-full p-3.5"
+  onClick={() => setEditingSection("pair")}
+>
       <div className="mb-2 flex items-center justify-between">
         <span className="text-sm font-extrabold">
           Pair
@@ -1046,10 +1067,10 @@ return (
         </>
       ) : (
         <span className="text-xs text-mj-muted">
-          Tap edit to add tiles
-        </span>
+  Tap to add tiles
+</span>
       )}
-    </Card>
+    </BouncyCard>
   </div>
 
   {/* Flowers */}
@@ -1206,21 +1227,21 @@ return (
 
   <div className="flex gap-3">
     {!initialGame && (
-      <Button
-        variant="secondary"
-        onClick={() => setStep(2)}
-      >
-        Back
-      </Button>
-    )}
+  <BouncyButton
+    variant="secondary"
+    onClick={() => setStep(2)}
+  >
+    Back
+  </BouncyButton>
+)}
 
-    <Button
-      className="flex-1"
-      disabled={!handValid}
-      onClick={() => setStep(4)}
-    >
-      Calculate Points →
-    </Button>
+<BouncyButton
+  className="flex-1"
+  disabled={!handValid}
+  onClick={() => setStep(4)}
+>
+  Calculate Points →
+</BouncyButton>
   </div>
 </Card>
 
@@ -1480,17 +1501,17 @@ return (
 
           {/* Single full-width save (matches Concept 10) */}
           <div className="flex gap-3">
-  <Button
-    variant="secondary"
-    onClick={() => setStep(3)}
-  >
-    Back
-  </Button>
+  <BouncyButton
+  variant="secondary"
+  onClick={() => setStep(3)}
+>
+  Back
+</BouncyButton>
 
-  <Button
-    className="flex-1"
-    disabled={isSaving}
-    onClick={async () => {
+<BouncyButton
+  className="flex-1"
+  disabled={isSaving}
+  onClick={async () => {
       if (isSaving) return;
 
       setIsSaving(true);
@@ -1568,7 +1589,7 @@ return (
       : initialGame
       ? "Save Changes"
       : "Save & Update Leaderboard"}
-  </Button>
+  </BouncyButton>
 </div>
         </>
       )}

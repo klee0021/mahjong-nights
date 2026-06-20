@@ -1,8 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
-import { Medal, ScoreValue } from "@/src/components/ui/primitives";
+import { useRouter } from "next/navigation";
+import {
+  Medal,
+  ScoreValue,
+} from "@/src/components/ui/primitives";
+import { TapCard } from "@/src/components/ui/TapCard";
 import type { Player } from "@/src/lib/types";
 
 export default function PlayersView({
@@ -10,6 +14,7 @@ export default function PlayersView({
 }: {
   players: Player[];
 }) {
+const router = useRouter();
   const [orderBy, setOrderBy] =
     useState<"score" | "wins" | "name">(
       "score"
@@ -138,10 +143,13 @@ const scoreRanks = new Map<string, number>();
 
       <ul className="flex flex-col gap-2.5">
         {sortedPlayers.map((p, i) => (
-          <li
-            key={p.id}
-            className="flex items-center gap-3 rounded-2xl border border-mj-line bg-mj-card px-4 py-3"
-          >
+          <TapCard
+  key={p.id}
+  onClick={() =>
+    router.push(`/players/${p.id}`)
+  }
+  className="flex w-full items-center gap-3 rounded-2xl border border-mj-line bg-mj-card px-4 py-3 text-left shadow-[0_14px_30px_-24px_rgba(20,18,12,.3)]"
+>
             <Medal
   rank={
     scoreRanks.get(p.id) ??
@@ -149,12 +157,9 @@ const scoreRanks = new Map<string, number>();
   }
 />
 
-            <Link
-              href={`/players/${p.id}`}
-              className="flex-1 text-[15px] font-extrabold text-mj-green hover:underline"
-            >
-              {p.name}
-            </Link>
+            <span className="flex-1 text-[15px] font-extrabold text-mj-green">
+  {p.name}
+</span>
 
             <span className="text-xs font-bold text-mj-muted">
               {p.wins}W
@@ -164,7 +169,7 @@ const scoreRanks = new Map<string, number>();
               value={p.total_score}
               className="w-14 text-right text-[16px]"
             />
-          </li>
+          </TapCard>
         ))}
       </ul>
     </>

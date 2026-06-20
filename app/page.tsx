@@ -1,10 +1,11 @@
-import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
 import { AppShell } from "@/src/components/ui/AppShell";
 import { Card, PanelHeader, SectionLabel, Sparkle } from "@/src/components/ui/primitives";
 import { Leaderboard } from "@/src/components/ui/Leaderboard";
 import { MahjongTile } from "@/src/components/mj/MahjongTile";
 import type { Player, SessionSummary, Standing } from "@/src/lib/types";
+import HomeSessionCard from "@/src/components/HomeSessionCard";
+import HomeCreateSessionButton from "@/src/components/HomeCreateSessionButton";
 
 export const dynamic = "force-dynamic";
 
@@ -26,25 +27,20 @@ export function HomeView({ openSessions, leaderboard }: { openSessions: SessionS
       <Card className="mb-4 p-4">
         <div className="mb-3"><SectionLabel>Open Sessions</SectionLabel></div>
         <div className="flex flex-col gap-2.5">
-          {openSessions.length ? openSessions.map((s) => (
-            <Link key={s.id} href={`/sessions/${s.id}`}
-              className="flex items-center gap-3 rounded-2xl border border-mj-line bg-mj-paper px-3.5 py-3 hover:bg-mj-greensoft/40">
-              <MahjongTile
-  char={(s as any).tile ?? "🀄"}
-  size="sm"
-/>
-              <div className="flex-1">
-                <div className="text-[15px] font-extrabold">{s.name}</div>
-                <div className="text-xs text-mj-muted">{[fmtDate(s.created_at), `${s.player_count ?? 0} players`, `${s.hand_count ?? 0} hands`].join(" · ")}</div>
-              </div>
-              <span className="text-xl font-bold text-mj-green">→</span>
-            </Link>
-          )) : <p className="text-sm text-mj-muted">No open sessions.</p>}
+          {openSessions.length ? (
+  openSessions.map((s) => (
+    <HomeSessionCard
+      key={s.id}
+      session={s}
+    />
+  ))
+) : (
+  <p className="text-sm text-mj-muted">
+    No open sessions.
+  </p>
+)}
         </div>
-        <Link href="/sessions"
-          className="mt-3 block rounded-2xl border-[1.5px] border-dashed border-[#c4bca6] py-3 text-center text-[13px] font-extrabold tracking-wide text-mj-green">
-          + CREATE SESSION
-        </Link>
+        <HomeCreateSessionButton />
       </Card>
 
       <Card>
@@ -55,8 +51,6 @@ export function HomeView({ openSessions, leaderboard }: { openSessions: SessionS
     </AppShell>
   );
 }
-
-const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB");
 
 /* ---- Route (server): fetch + pass props ---- */
 export default async function HomePage() {

@@ -5,6 +5,8 @@ import { addPlayer } from "./actions/addPlayer";
 import { recalculateStats } from "./actions/recalculateStats";
 import PlayersView from "./PlayersView";
 import type { Player } from "@/src/lib/types";
+import { TapCard } from "@/src/components/ui/TapCard";
+import { TapButton } from "@/src/components/ui/TapButton";
 
 export const dynamic = "force-dynamic";
 
@@ -24,14 +26,10 @@ export default async function PlayersPage() {
         </h1>
 
         <form action={recalculateStats}>
-          <Button
-            variant="secondary"
-            type="submit"
-            className="px-3 py-2 text-xs"
-          >
-            ↻ Recalculate
-          </Button>
-        </form>
+  <TapCard className="rounded-2xl border border-mj-line bg-mj-card px-3 py-2 text-xs font-bold text-mj-green text-center">
+    ↻ Recalculate
+  </TapCard>
+</form>
       </div>
 
       <form
@@ -44,12 +42,12 @@ export default async function PlayersPage() {
           className="flex-1 rounded-2xl border border-mj-line bg-mj-card px-3.5 py-3 text-sm outline-none focus:border-mj-green"
         />
 
-        <Button
-          type="submit"
-          className="px-4 py-3"
-        >
-          Add
-        </Button>
+        <TapButton
+  type="submit"
+  className="px-4 py-3"
+>
+  Add
+</TapButton>
       </form>
 
       <PlayersView players={players} />

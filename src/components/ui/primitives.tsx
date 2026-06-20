@@ -40,8 +40,35 @@ export function ScoreValue({ value, className = "" }: { value: number; className
   return <span className={`font-display font-bold ${color} ${className}`}>{text}</span>;
 }
 
-export function Card({ className = "", children }: { className?: string; children: React.ReactNode }) {
-  return <div className={`bg-mj-card border border-mj-line rounded-2xl overflow-hidden shadow-[0_14px_30px_-24px_rgba(20,18,12,.3)] ${className}`}>{children}</div>;
+export function Card({
+  className = "",
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`bg-mj-card border border-mj-line rounded-2xl overflow-hidden shadow-[0_14px_30px_-24px_rgba(20,18,12,.3)] ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+export function ClickableCard({
+  className = "",
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`bg-mj-card border border-mj-line rounded-2xl overflow-hidden shadow-[0_14px_30px_-24px_rgba(20,18,12,.3)] ${className}`}
+    >
+      {children}
+    </div>
+  );
 }
 
 /** Forest-green panel header with fret-corner ornaments. */
@@ -57,7 +84,7 @@ export function PanelHeader({ children, className = "" }: { children: React.Reac
 type BtnVariant = "primary" | "danger" | "secondary" | "ghost";
 export function Button({ variant = "primary", className = "", type = "button", ...props }:
   React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: BtnVariant }) {
-  const base = `${TAP} inline-flex items-center justify-center gap-2 rounded-2xl font-extrabold text-[15px] px-5 py-4 transition disabled:opacity-50`;
+  const base = `${TAP} inline-flex items-center justify-center gap-2 rounded-2xl font-extrabold text-[15px] px-5 py-4 disabled:opacity-50`;
   const styles: Record<BtnVariant, string> = {
     primary:   "bg-mj-green text-[#f4efe2] shadow-[0_12px_24px_-12px_rgba(24,74,53,.7)] hover:brightness-110",
     danger:    "bg-mj-neg text-[#fdeeec] shadow-[0_12px_24px_-12px_rgba(203,58,44,.7)] hover:brightness-110",

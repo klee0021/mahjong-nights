@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
 import { AppShell } from "@/src/components/ui/AppShell";
-import { Card, PanelHeader, Button } from "@/src/components/ui/primitives";
+import { Card, PanelHeader } from "@/src/components/ui/primitives";
+import { TapButton } from "@/src/components/ui/TapButton";
 import { Leaderboard } from "@/src/components/ui/Leaderboard";
 import { MahjongTile } from "@/src/components/mj/MahjongTile";
 import { endSession } from "./actions/endSession";
@@ -58,8 +59,10 @@ standings: Standing[];
 
       {isActive && (
         <Link href={`/sessions/${id}/record-game`}>
-          <Button variant="danger" className="mb-4 w-full"><MahjongTile char="🀄" size="sm" /> Record a Hand</Button>
-        </Link>
+  <TapButton variant="danger" className="mb-4 w-full">
+    <MahjongTile char="🀄" size="sm" /> Record a Hand
+  </TapButton>
+</Link>
       )}
 
       <Card className="mb-4">
@@ -100,9 +103,9 @@ standings: Standing[];
   ))}
         </select>
 
-        <Button type="submit">
-          Add
-        </Button>
+        <TapButton type="submit">
+  Add
+</TapButton>
       </form>
     </div>
   )}
@@ -148,16 +151,20 @@ standings: Standing[];
 </Card>
 
       <div className="flex flex-col gap-3">
-        <Link href={`/sessions/${id}/history`}><Button variant="secondary" className="w-full">📜 Hand History</Button></Link>
+        <Link href={`/sessions/${id}/history`}>
+  <TapButton variant="secondary" className="w-full">
+    📜 Hand History
+  </TapButton>
+</Link>
         {isActive ? (
   <form action={endSession.bind(null, id)}>
-    <Button
-      variant="secondary"
-      type="submit"
-      className="w-full border-[#eccaa0] bg-[#f8efdb] text-[#8a6a2e]"
-    >
-      End Session
-    </Button>
+    <TapButton
+  variant="secondary"
+  type="submit"
+  className="w-full border-[#eccaa0] bg-[#f8efdb] text-[#8a6a2e]"
+>
+  End Session
+</TapButton>
   </form>
 ) : (
   <form action={deleteSession.bind(null, id)}>
