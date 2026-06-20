@@ -1,3 +1,5 @@
+export const revalidate = 30;
+
 import Link from "next/link";
 import { supabase } from "@/src/lib/supabase";
 import { AppShell } from "@/src/components/ui/AppShell";
@@ -96,21 +98,40 @@ export function PlayerDetailView({
 
 export default async function PlayerPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { data: player } = await supabase.from("players").select("*").eq("id", id).single();
-  const { data: won } = await supabase.from("games").select("score").eq("winner_id", id);
-  const { data: all } = await supabase.from("games").select("hand_data");
-  const { data: sessions } = await supabase
-  .from("session_players")
-  .select(`
-    session_id,
-    sessions (
-      id,
-      name,
-      created_at,
-      tile
-    )
-  `)
-  .eq("player_id", id);
+  const [
+  { data: player },
+  { data: won },
+  { data: all },
+  { data: sessions },
+] = await Promise.all([
+  supabase
+    .from("players")
+    .select("*")
+    .eq("id", id)
+    .single(),
+
+  supabase
+    .from("games")
+    .select("score")
+    .eq("winner_id", id),
+
+  supabase
+    .from("games")
+    .select("hand_data"),
+
+  supabase
+    .from("session_players")
+    .select(`
+      session_id,
+      sessions (
+        id,
+        name,
+        created_at,
+        tile
+      )
+    `)
+    .eq("player_id", id),
+]);
 
   const played = (all ?? []).filter((g: any) => g.hand_data?.participants?.includes(player?.name)).length;
   const wins = player?.wins ?? 0;
