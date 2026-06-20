@@ -15,9 +15,9 @@ import {
   Indicator,
   Sparkle,
 } from "@/src/components/ui/primitives";
-import { MahjongTile } from "@/src/components/mj/MahjongTile";
 import { BouncyCard } from "@/src/components/ui/BouncyCard";
 import { BouncyButton } from "@/src/components/ui/BouncyButton";
+import { MahjongTile, TileRow } from "@/src/components/mj/MahjongTile";
 
 type Participant = {
 player_id: string;
@@ -848,24 +848,27 @@ return (
       )}
     </div>
 
-    <button
-      type="button"
-      onClick={() => setEditingSection("meld1")}
-      className="text-[13px] font-bold text-mj-green"
-    >
-      Edit
-    </button>
+    {meld1Tiles.length > 0 && (
+  <button
+    type="button"
+    onClick={() => setEditingSection("meld1")}
+    className="mt-1 text-xs text-mj-muted"
+  >
+    {meld1Source === "self-draw"
+      ? "Self-Draw"
+      : `Claimed from ${meld1Source}`}
+  </button>
+)}
   </div>
 
   {meld1Tiles.length ? (
     <>
-      <div className="text-4xl">
-        {meld1Tiles.join(" ")}
-      </div>
+      <TileRow
+  tiles={meld1Tiles}
+  size="sm"
+  gap={7}
+/>
 
-      <div className="mt-2 text-xs text-mj-muted">
-        {formatSource(meld1Source)}
-      </div>
     </>
   ) : (
     <span className="text-xs text-mj-muted">
@@ -901,24 +904,26 @@ return (
       )}
     </div>
 
-    <button
-      type="button"
-      onClick={() => setEditingSection("meld2")}
-      className="text-[13px] font-bold text-mj-green"
-    >
-      Edit
-    </button>
+    {meld2Tiles.length > 0 && (
+  <button
+    type="button"
+    onClick={() => setEditingSection("meld2")}
+    className="mt-1 text-xs text-mj-muted"
+  >
+    {meld2Source === "self-draw"
+      ? "Self-Draw"
+      : `Claimed from ${meld2Source}`}
+  </button>
+)}
   </div>
 
   {meld2Tiles.length ? (
     <>
-      <div className="text-4xl">
-        {meld2Tiles.join(" ")}
-      </div>
-
-      <div className="mt-2 text-xs text-mj-muted">
-        {formatSource(meld2Source)}
-      </div>
+      <TileRow
+  tiles={meld2Tiles}
+  size="sm"
+  gap={7}
+/>
     </>
   ) : (
     <span className="text-xs text-mj-muted">
@@ -954,24 +959,27 @@ return (
       )}
     </div>
 
-    <button
-      type="button"
-      onClick={() => setEditingSection("meld3")}
-      className="text-[13px] font-bold text-mj-green"
-    >
-      Edit
-    </button>
+    {meld3Tiles.length > 0 && (
+  <button
+    type="button"
+    onClick={() => setEditingSection("meld3")}
+    className="mt-1 text-xs text-mj-muted"
+  >
+    {meld3Source === "self-draw"
+      ? "Self-Draw"
+      : `Claimed from ${meld3Source}`}
+  </button>
+)}
   </div>
 
   {meld3Tiles.length ? (
     <>
-      <div className="text-4xl">
-        {meld3Tiles.join(" ")}
-      </div>
+      <TileRow
+  tiles={meld3Tiles}
+  size="sm"
+  gap={7}
+/>
 
-      <div className="mt-2 text-xs text-mj-muted">
-        {formatSource(meld3Source)}
-      </div>
     </>
   ) : (
     <span className="text-xs text-mj-muted">
@@ -1008,24 +1016,27 @@ return (
       )}
     </div>
 
-    <button
-      type="button"
-      onClick={() => setEditingSection("meld4")}
-      className="text-[13px] font-bold text-mj-green"
-    >
-      Edit
-    </button>
+    {meld4Tiles.length > 0 && (
+  <button
+    type="button"
+    onClick={() => setEditingSection("meld4")}
+    className="mt-1 text-xs text-mj-muted"
+  >
+    {meld4Source === "self-draw"
+      ? "Self-Draw"
+      : `Claimed from ${meld4Source}`}
+  </button>
+)}
   </div>
 
   {meld4Tiles.length ? (
     <>
-      <div className="text-4xl">
-        {meld4Tiles.join(" ")}
-      </div>
+      <TileRow
+  tiles={meld4Tiles}
+  size="sm"
+  gap={7}
+/>
 
-      <div className="mt-2 text-xs text-mj-muted">
-        {formatSource(meld4Source)}
-      </div>
     </>
   ) : (
     <span className="text-xs text-mj-muted">
@@ -1046,24 +1057,27 @@ return (
           Pair
         </span>
 
-        <button
-          type="button"
-          onClick={() => setEditingSection("pair")}
-          className="text-[13px] font-bold text-mj-green"
-        >
-          Edit
-        </button>
+        {pairTiles.length > 0 && (
+  <button
+    type="button"
+    onClick={() => setEditingSection("pair")}
+    className="mt-1 text-xs text-mj-muted"
+  >
+    {pairSource === "self-draw"
+      ? "Self-Draw"
+      : `Claimed from ${pairSource}`}
+  </button>
+)}
       </div>
 
       {pairTiles.length ? (
         <>
-          <div className="text-4xl">
-            {pairTiles.join(" ")}
-          </div>
+          <TileRow
+  tiles={pairTiles}
+  size="sm"
+  gap={7}
+/>
 
-          <div className="mt-2 text-xs text-mj-muted">
-            {formatSource(pairSource)}
-          </div>
         </>
       ) : (
         <span className="text-xs text-mj-muted">
@@ -1116,7 +1130,7 @@ return (
 
 <Card className="mb-3 p-3.5">
   <div className="mb-3 text-sm font-extrabold">
-    Winning Method
+    Winning Tile
   </div>
 
   <div className="space-y-2">
@@ -1144,7 +1158,7 @@ return (
 
       <div className="flex-1 text-left">
         <div className="font-extrabold">
-          Self Draw
+          Self-Draw
         </div>
 
         <div className="text-xs text-mj-muted">

@@ -1,10 +1,17 @@
 import Link from "next/link";
+import { BouncyLink } from "@/src/components/ui/BouncyLink";
+import { BouncyButton } from "@/src/components/ui/BouncyButton";
 import { supabase } from "@/src/lib/supabase";
 import { AppShell } from "@/src/components/ui/AppShell";
-import { Card, Sparkle } from "@/src/components/ui/primitives";
+import {
+  Card,
+  Sparkle,
+  TAP,
+} from "@/src/components/ui/primitives";
 import { MahjongTile, TileRow } from "@/src/components/mj/MahjongTile";
 import { deleteGame } from "../actions/deleteGame";
 import type { GameRecord } from "@/src/lib/types";
+
 
 export const dynamic = "force-dynamic";
 
@@ -21,10 +28,21 @@ function HandCard({ sessionId, g }: { sessionId: string; g: GameRecord }) {
   HAND #{g.index}
 </span>
         <div className="flex gap-1.5">
-          <Link href={`/sessions/${sessionId}/edit-game/${g.id}`} className="rounded-lg bg-[#f4efe2] px-2.5 py-2 text-[11px] font-extrabold text-mj-green">Edit</Link>
+          <BouncyLink
+  href={`/sessions/${sessionId}/edit-game/${g.id}`}
+  className="inline-flex items-center justify-center rounded-lg bg-[#f4efe2] px-2.5 py-2 text-[11px] font-extrabold text-mj-green"
+>
+  Edit
+</BouncyLink>
           <form action={deleteGame.bind(null, sessionId, g.id)}>
-            <button type="submit" className="rounded-lg bg-mj-neg px-2.5 py-2 text-[11px] font-extrabold text-white">Delete</button>
-          </form>
+  <BouncyButton
+  type="submit"
+  variant="danger"
+  className="!rounded-lg !px-2.5 !py-2 !text-[11px]"
+>
+  Delete
+</BouncyButton>
+</form>
         </div>
       </div>
       <div className="p-3.5">
