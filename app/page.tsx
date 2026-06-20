@@ -7,7 +7,7 @@ import type { Player, SessionSummary, Standing } from "@/src/lib/types";
 import HomeSessionCard from "@/src/components/HomeSessionCard";
 import HomeCreateSessionButton from "@/src/components/HomeCreateSessionButton";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 /* ---- Presentational view (props-driven) ---- */
 export function HomeView({ openSessions, leaderboard }: { openSessions: SessionSummary[]; leaderboard: Standing[] }) {
@@ -54,16 +54,21 @@ export function HomeView({ openSessions, leaderboard }: { openSessions: SessionS
 
 /* ---- Route (server): fetch + pass props ---- */
 export default async function HomePage() {
-  const { data: sessions } = await supabase
+  const [
+  { data: sessions },
+  { data: players },
+] = await Promise.all([
+  supabase
     .from("sessions")
     .select("*")
     .eq("is_active", true)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false }),
 
-  const { data: players } = await supabase
+  supabase
     .from("players")
     .select("*")
-    .order("total_score", { ascending: false });
+    .order("total_score", { ascending: false }),
+]);
 
   const enrichedSessions = await Promise.all(
     (sessions ?? []).map(async (session) => {
