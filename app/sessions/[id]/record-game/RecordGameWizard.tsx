@@ -826,9 +826,19 @@ return (
       </span>
 
       {detectMeldType(meld1Tiles) && (
-        <span className="rounded-full bg-mj-greensoft px-2 py-0.5 text-[10px] font-extrabold text-mj-pos">
-          {detectMeldType(meld1Tiles).toUpperCase()}
-        </span>
+        <span
+  className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
+    detectMeldType(meld1Tiles) === "Pung"
+      ? "bg-[#dff0e7] text-mj-pos"
+      : detectMeldType(meld1Tiles) === "Chow"
+      ? "bg-[#dfe9f8] text-[#2563eb]"
+      : detectMeldType(meld1Tiles) === "Kong"
+      ? "bg-[#f8f0d8] text-[#b8860b]"
+      : ""
+  }`}
+>
+  {detectMeldType(meld1Tiles).toUpperCase()}
+</span>
       )}
     </div>
 
@@ -865,9 +875,19 @@ return (
       </span>
 
       {detectMeldType(meld2Tiles) && (
-        <span className="rounded-full bg-mj-greensoft px-2 py-0.5 text-[10px] font-extrabold text-mj-pos">
-          {detectMeldType(meld2Tiles).toUpperCase()}
-        </span>
+        <span
+  className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
+    detectMeldType(meld1Tiles) === "Pung"
+      ? "bg-[#dff0e7] text-mj-pos"
+      : detectMeldType(meld1Tiles) === "Chow"
+      ? "bg-[#dfe9f8] text-[#2563eb]"
+      : detectMeldType(meld1Tiles) === "Kong"
+      ? "bg-[#f8f0d8] text-[#b8860b]"
+      : ""
+  }`}
+>
+  {detectMeldType(meld1Tiles).toUpperCase()}
+</span>
       )}
     </div>
 
@@ -905,9 +925,19 @@ return (
       </span>
 
       {detectMeldType(meld3Tiles) && (
-        <span className="rounded-full bg-mj-greensoft px-2 py-0.5 text-[10px] font-extrabold text-mj-pos">
-          {detectMeldType(meld3Tiles).toUpperCase()}
-        </span>
+        <span
+  className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
+    detectMeldType(meld1Tiles) === "Pung"
+      ? "bg-[#dff0e7] text-mj-pos"
+      : detectMeldType(meld1Tiles) === "Chow"
+      ? "bg-[#dfe9f8] text-[#2563eb]"
+      : detectMeldType(meld1Tiles) === "Kong"
+      ? "bg-[#f8f0d8] text-[#b8860b]"
+      : ""
+  }`}
+>
+  {detectMeldType(meld1Tiles).toUpperCase()}
+</span>
       )}
     </div>
 
@@ -944,9 +974,19 @@ return (
       </span>
 
       {detectMeldType(meld4Tiles) && (
-        <span className="rounded-full bg-mj-greensoft px-2 py-0.5 text-[10px] font-extrabold text-mj-pos">
-          {detectMeldType(meld4Tiles).toUpperCase()}
-        </span>
+        <span
+  className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
+    detectMeldType(meld1Tiles) === "Pung"
+      ? "bg-[#dff0e7] text-mj-pos"
+      : detectMeldType(meld1Tiles) === "Chow"
+      ? "bg-[#dfe9f8] text-[#2563eb]"
+      : detectMeldType(meld1Tiles) === "Kong"
+      ? "bg-[#f8f0d8] text-[#b8860b]"
+      : ""
+  }`}
+>
+  {detectMeldType(meld1Tiles).toUpperCase()}
+</span>
       )}
     </div>
 
