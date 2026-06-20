@@ -833,7 +833,7 @@ return (
       : detectMeldType(meld1Tiles) === "Chow"
       ? "bg-[#dfe9f8] text-[#2563eb]"
       : detectMeldType(meld1Tiles) === "Kong"
-      ? "bg-[#f8f0d8] text-[#b8860b]"
+      ? "bg-[#f6e7b8] text-[#8b5e00]"
       : ""
   }`}
 >
@@ -882,7 +882,7 @@ return (
       : detectMeldType(meld2Tiles) === "Chow"
       ? "bg-[#dfe9f8] text-[#2563eb]"
       : detectMeldType(meld2Tiles) === "Kong"
-      ? "bg-[#f8f0d8] text-[#b8860b]"
+      ? "bg-[#f6e7b8] text-[#8b5e00]"
       : ""
   }`}
 >
@@ -932,7 +932,7 @@ return (
       : detectMeldType(meld3Tiles) === "Chow"
       ? "bg-[#dfe9f8] text-[#2563eb]"
       : detectMeldType(meld3Tiles) === "Kong"
-      ? "bg-[#f8f0d8] text-[#b8860b]"
+      ? "bg-[#f6e7b8] text-[#8b5e00]"
       : ""
   }`}
 >
@@ -981,7 +981,7 @@ return (
       : detectMeldType(meld4Tiles) === "Chow"
       ? "bg-[#dfe9f8] text-[#2563eb]"
       : detectMeldType(meld4Tiles) === "Kong"
-      ? "bg-[#f8f0d8] text-[#b8860b]"
+      ? "bg-[#f6e7b8] text-[#8b5e00]"
       : ""
   }`}
 >
