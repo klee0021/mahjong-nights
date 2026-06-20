@@ -877,16 +877,16 @@ return (
       {detectMeldType(meld2Tiles) && (
         <span
   className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
-    detectMeldType(meld1Tiles) === "Pung"
+    detectMeldType(meld2Tiles) === "Pung"
       ? "bg-[#dff0e7] text-mj-pos"
-      : detectMeldType(meld1Tiles) === "Chow"
+      : detectMeldType(meld2Tiles) === "Chow"
       ? "bg-[#dfe9f8] text-[#2563eb]"
-      : detectMeldType(meld1Tiles) === "Kong"
+      : detectMeldType(meld2Tiles) === "Kong"
       ? "bg-[#f8f0d8] text-[#b8860b]"
       : ""
   }`}
 >
-  {detectMeldType(meld1Tiles).toUpperCase()}
+  {detectMeldType(meld2Tiles).toUpperCase()}
 </span>
       )}
     </div>
@@ -927,16 +927,16 @@ return (
       {detectMeldType(meld3Tiles) && (
         <span
   className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
-    detectMeldType(meld1Tiles) === "Pung"
+    detectMeldType(meld3Tiles) === "Pung"
       ? "bg-[#dff0e7] text-mj-pos"
-      : detectMeldType(meld1Tiles) === "Chow"
+      : detectMeldType(meld3Tiles) === "Chow"
       ? "bg-[#dfe9f8] text-[#2563eb]"
-      : detectMeldType(meld1Tiles) === "Kong"
+      : detectMeldType(meld3Tiles) === "Kong"
       ? "bg-[#f8f0d8] text-[#b8860b]"
       : ""
   }`}
 >
-  {detectMeldType(meld1Tiles).toUpperCase()}
+  {detectMeldType(meld3Tiles).toUpperCase()}
 </span>
       )}
     </div>
@@ -976,16 +976,16 @@ return (
       {detectMeldType(meld4Tiles) && (
         <span
   className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
-    detectMeldType(meld1Tiles) === "Pung"
+    detectMeldType(meld4Tiles) === "Pung"
       ? "bg-[#dff0e7] text-mj-pos"
-      : detectMeldType(meld1Tiles) === "Chow"
+      : detectMeldType(meld4Tiles) === "Chow"
       ? "bg-[#dfe9f8] text-[#2563eb]"
-      : detectMeldType(meld1Tiles) === "Kong"
+      : detectMeldType(meld4Tiles) === "Kong"
       ? "bg-[#f8f0d8] text-[#b8860b]"
       : ""
   }`}
 >
-  {detectMeldType(meld1Tiles).toUpperCase()}
+  {detectMeldType(meld4Tiles).toUpperCase()}
 </span>
       )}
     </div>
