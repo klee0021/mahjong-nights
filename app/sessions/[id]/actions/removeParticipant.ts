@@ -18,5 +18,7 @@ export async function removeParticipant(
     return;
   }
 
-  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath("/");
+revalidatePath("/sessions");
+revalidatePath(`/sessions/${sessionId}`);
 }

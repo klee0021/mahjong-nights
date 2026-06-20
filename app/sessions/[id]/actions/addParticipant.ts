@@ -23,5 +23,9 @@ export async function addParticipant(
     return;
   }
 
-  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath("/");
+
+revalidatePath("/sessions");
+
+revalidatePath(`/sessions/${sessionId}`);
 }
