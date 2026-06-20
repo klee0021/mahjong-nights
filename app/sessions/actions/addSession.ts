@@ -49,4 +49,10 @@ const tile =
     });
 
   if (error) {
+  console.error(error);
+  return;
+}
+
+revalidatePath("/");
+revalidatePath("/sessions");
 }
