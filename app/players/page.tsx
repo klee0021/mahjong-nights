@@ -8,7 +8,7 @@ import type { Player } from "@/src/lib/types";
 import { TapCard } from "@/src/components/ui/TapCard";
 import { TapButton } from "@/src/components/ui/TapButton";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export default async function PlayersPage() {
   const { data } = await supabase
