@@ -70,93 +70,22 @@ standings: Standing[];
         <Leaderboard rows={standings} />
       </Card>
 
-<Card className="mb-4">
-  <PanelHeader>Participants</PanelHeader>
+      <div className="grid grid-cols-2 gap-3 mb-3">
 
-  {isActive && (
-    <div className="border-b border-mj-line p-4">
-      <form
-  action={addParticipantAction}
-  className="flex gap-2"
->
-        <select
-  name="playerId"
-  className="flex-1 rounded-2xl border border-mj-line bg-mj-card px-3 py-3 text-sm"
->
-          <option>Select Player</option>
+  <Link href={`/sessions/${id}/history`}>
+    <TapButton variant="secondary" className="w-full">
+      📜 Hand History
+    </TapButton>
+  </Link>
 
-          {players
-  ?.filter(
-    (player: any) =>
-      !participantList.some(
-        (participant: any) =>
-          participant.player_id === player.id
-      )
-  )
-  .map((player: any) => (
-    <option
-      key={player.id}
-      value={player.id}
-    >
-      {player.name}
-    </option>
-  ))}
-        </select>
+  <Link href={`/sessions/${id}/players`}>
+    <TapButton variant="secondary" className="w-full">
+      👥 Players
+    </TapButton>
+  </Link>
 
-        <TapButton type="submit">
-  Add
-</TapButton>
-      </form>
-    </div>
-  )}
-
-  <div className="divide-y divide-mj-line/70">
-    {participantList.length ? (
-     participantList.map((participant: any) => (
-  <div
-    key={participant.player_id}
-    className="flex items-center justify-between px-4 py-3"
-  >
-    <span className="font-semibold">
-      {participant.players?.name}
-    </span>
-
-    {isActive &&
- !playersWhoPlayed.has(
-   participant.players?.name
- ) && (
-  <form
-    action={removeParticipant.bind(
-      null,
-      id,
-      participant.player_id
-    )}
-  >
-    <button
-      type="submit"
-      className="text-sm text-mj-muted hover:text-mj-neg"
-    >
-      ✕
-    </button>
-  </form>
-)}
-  </div>
-))
-    ) : (
-      <div className="px-4 py-4 text-sm text-mj-muted">
-        No participants.
       </div>
-    )}
-  </div>
-</Card>
-
-      <div className="flex flex-col gap-3">
-        <Link href={`/sessions/${id}/history`}>
-  <TapButton variant="secondary" className="w-full">
-    📜 Hand History
-  </TapButton>
-</Link>
-        {isActive ? (
+{isActive ? (
   <form action={endSession.bind(null, id)}>
     <TapButton
   variant="secondary"
@@ -171,7 +100,6 @@ standings: Standing[];
     <DeleteSessionButton />
   </form>
 )}
-      </div>
     </AppShell>
   );
 }
