@@ -645,6 +645,98 @@ const result = {
   concealed: concealedSelfDraw,
   settlement,
 };
+const currentTiles =
+  editingSection === "meld1"
+    ? meld1Tiles
+    : editingSection === "meld2"
+    ? meld2Tiles
+    : editingSection === "meld3"
+    ? meld3Tiles
+    : editingSection === "meld4"
+    ? meld4Tiles
+    : pairTiles;
+
+const currentSource =
+  editingSection === "meld1"
+    ? meld1Source
+    : editingSection === "meld2"
+    ? meld2Source
+    : editingSection === "meld3"
+    ? meld3Source
+    : editingSection === "meld4"
+    ? meld4Source
+    : editingSection === "pair"
+    ? pairSource
+    : "self-draw";
+
+const currentMax =
+  editingSection === "pair" ? 2 : 4;
+
+function setCurrentTiles(
+  tiles: string[]
+) {
+  const tileOrder = [
+    "🀇","🀈","🀉","🀊","🀋","🀌","🀍","🀎","🀏",
+    "🀐","🀑","🀒","🀓","🀔","🀕","🀖","🀗","🀘",
+    "🀙","🀚","🀛","🀜","🀝","🀞","🀟","🀠","🀡",
+    "🀀","🀁","🀂","🀃",
+    "🀄","🀅","🀆",
+  ];
+
+  const sortedTiles = [...tiles].sort(
+    (a, b) =>
+      tileOrder.indexOf(a) -
+      tileOrder.indexOf(b)
+  );
+
+  switch (editingSection) {
+    case "meld1":
+      setMeld1Tiles(sortedTiles);
+      break;
+
+    case "meld2":
+      setMeld2Tiles(sortedTiles);
+      break;
+
+    case "meld3":
+      setMeld3Tiles(sortedTiles);
+      break;
+
+    case "meld4":
+      setMeld4Tiles(sortedTiles);
+      break;
+
+    case "pair":
+      setPairTiles(sortedTiles);
+      break;
+  }
+}
+
+function setCurrentSource(
+  source: string
+) {
+  switch (editingSection) {
+    case "meld1":
+      setMeld1Source(source);
+      break;
+
+    case "meld2":
+      setMeld2Source(source);
+      break;
+
+    case "meld3":
+      setMeld3Source(source);
+      break;
+
+    case "meld4":
+      setMeld4Source(source);
+      break;
+
+    case "pair":
+      setPairSource(source);
+      break;
+  }
+}
 
 return (
   <div className="mx-auto max-w-3xl px-4 pb-24 pt-4">
@@ -1262,163 +1354,62 @@ return (
     </>
 )}
 
- {step === 3 && editingSection === "meld1" && (
-  <div>
-    <button
-      onClick={() =>
-        setEditingSection(null)
-      }
-      className="mb-4 rounded border px-3 py-1 text-sm"
-    >
-      ← Back
-    </button>
+ {step === 3 && editingSection && (
+  <MeldEditor
+    title={
+      editingSection === "pair"
+        ? "Pair"
+        : editingSection.replace(
+            "meld",
+            "Meld "
+          )
+    }
+    tiles={currentTiles}
+    max={currentMax}
+    showMethod={true}
+    source={currentSource}
+    others={otherPlayers.map(
+      (p) => p.players.name
+    )}
 
-    <MeldEditor
-  title="Meld 1"
-  maxTiles={4}
-  initialTiles={meld1Tiles}
-  initialSource={meld1Source}
-  sourceOptions={otherPlayers.map(
-    (p) => p.players.name
-  )}
-  onSave={(tiles, source) => {
-    setMeld1Tiles(tiles);
+onCancel={() => {
 
-    if (source) {
-      setMeld1Source(source);
+  setEditingSection(null);
+
+}}
+    onSave={(tiles, source) => {
+  if (editingSection === "pair") {
+    if (
+      tiles.length !== 2 ||
+      tiles[0] !== tiles[1]
+    ) {
+      alert(
+        "Pair must contain two matching tiles."
+      );
+      return;
+    }
+  } else {
+    if (tiles.length < 3) {
+      alert(
+        "A meld must contain at least 3 tiles."
+      );
+      return;
     }
 
-    setEditingSection(null);
-  }}
-/>
-  </div>
-)}
-
-{step === 3 && editingSection === "pair" && (
-  <div>
-    <button
-      onClick={() =>
-        setEditingSection(null)
-      }
-      className="mb-4 rounded border px-3 py-1 text-sm"
-    >
-      ← Back
-    </button>
-
-    <MeldEditor
-  title="Pair"
-  maxTiles={2}
-  initialTiles={pairTiles}
-  initialSource={pairSource}
-  sourceOptions={otherPlayers.map(
-    (p) => p.players.name
-  )}
-  onSave={(tiles, source) => {
-    setPairTiles(tiles);
-
-    if (source) {
-      setPairSource(source);
+    if (detectMeldType(tiles) === "") {
+      alert(
+        "A meld must be a Chow, Pung, or Kong."
+      );
+      return;
     }
+  }
 
-    setEditingSection(null);
-  }}
-/>
-  </div>
-)}
-{step === 3 && editingSection === "meld2" && (
-  <div>
-    <button
-      onClick={() =>
-        setEditingSection(null)
-      }
-      className="mb-4 rounded border px-3 py-1 text-sm"
-    >
-      ← Back
-    </button>
+  setCurrentTiles(tiles);
+  setCurrentSource(source);
 
-    <MeldEditor
-  title="Meld 2"
-  maxTiles={4}
-  initialTiles={meld2Tiles}
-  initialSource={meld2Source}
-  sourceOptions={otherPlayers.map(
-    (p) => p.players.name
-  )}
-  onSave={(tiles, source) => {
-    setMeld2Tiles(tiles);
-
-    if (source) {
-      setMeld2Source(source);
-    }
-
-    setEditingSection(null);
-  }}
-/>
-  </div>
-)}
-
-{step === 3 && editingSection === "meld3" && (
-  <div>
-    <button
-      onClick={() =>
-        setEditingSection(null)
-      }
-      className="mb-4 rounded border px-3 py-1 text-sm"
-    >
-      ← Back
-    </button>
-
-    <MeldEditor
-  title="Meld 3"
-  maxTiles={4}
-  initialTiles={meld3Tiles}
-  initialSource={meld3Source}
-  sourceOptions={otherPlayers.map(
-    (p) => p.players.name
-  )}
-  onSave={(tiles, source) => {
-    setMeld3Tiles(tiles);
-
-    if (source) {
-      setMeld3Source(source);
-    }
-
-    setEditingSection(null);
-  }}
-/>
-  </div>
-)}
-
-{step === 3 && editingSection === "meld4" && (
-  <div>
-    <button
-      onClick={() =>
-        setEditingSection(null)
-      }
-      className="mb-4 rounded border px-3 py-1 text-sm"
-    >
-      ← Back
-    </button>
-
-    <MeldEditor
-  title="Meld 4"
-  maxTiles={4}
-  initialTiles={meld4Tiles}
-  initialSource={meld4Source}
-  sourceOptions={otherPlayers.map(
-    (p) => p.players.name
-  )}
-  onSave={(tiles, source) => {
-    setMeld4Tiles(tiles);
-
-    if (source) {
-      setMeld4Source(source);
-    }
-
-    setEditingSection(null);
-  }}
-/>
-  </div>
+  setEditingSection(null);
+}}
+  />
 )}
 
  {step === 4 && (

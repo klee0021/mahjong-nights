@@ -1,295 +1,122 @@
 "use client";
 
+// app/sessions/[id]/record-game/MeldEditor.tsx
+// ---------------------------------------------------------------------------
+// Concept 09 — Meld Editor.
+// Opened inside the Record-a-Hand wizard (Step 3) when a meld/pair is tapped.
+// Fully controlled: holds no state of its own — the wizard owns the tiles and
+// passes handlers, so the same editor serves every meld and the pair.
+// Safari-safe: every tap target is a real <button> via the shared primitives.
+// ---------------------------------------------------------------------------
 import { useState } from "react";
+import { Card, Button, SegButton, TAP } from "@/src/components/ui/primitives";
+import { MahjongTile } from "@/src/components/mj/MahjongTile";
+import { TilePalette } from "@/src/components/mj/TilePalette";
 
-type Props = {
+export type MeldEditorProps = {
   title: string;
-  maxTiles: number;
-  initialTiles?: string[];
-availableTiles?: string[];
-  initialSource?: string;
-  sourceOptions?: string[];
-  onSave: (
-    tiles: string[],
-    source?: string
-  ) => void;
+  tiles: string[];
+  max: number;
+  showMethod: boolean;
+  source: string;
+  others: string[];
+ onCancel: () => void;
+onSave: (
+  tiles: string[],
+  source: string
+) => void;
 };
 
-export default function MeldEditor({
-  title,
-  maxTiles,
-  initialTiles = [],
-availableTiles,
-initialSource = "self-draw",
-  sourceOptions = [],
+export function MeldEditor({
+title,
+  tiles,
+  max,
+  showMethod,
+  source,
+  others,
+  onCancel,
   onSave,
-}: Props) {
-  const [selectedTiles, setSelectedTiles] =
-  useState<string[]>(initialTiles);
-const [source, setSource] =
-  useState(initialSource);
+}: MeldEditorProps) {
 
-  const characters = [
-    "🀇", "🀈", "🀉", "🀊", "🀋", "🀌", "🀍", "🀎", "🀏",
-  ];
-
-  const bamboo = [
-    "🀐", "🀑", "🀒", "🀓", "🀔", "🀕", "🀖", "🀗", "🀘",
-  ];
-
-  const dots = [
-    "🀙", "🀚", "🀛", "🀜", "🀝", "🀞", "🀟", "🀠", "🀡",
-  ];
-
-  const winds = [
-    "🀀", "🀁", "🀂", "🀃",
-  ];
-
-  const dragons = [
-    "🀄", "🀅", "🀆",
-  ];
-function detectMeldType(
-  tiles: string[]
-) {
-  if (tiles.length === 2) {
-    if (tiles[0] === tiles[1]) {
-      return "Pair";
-    }
-
-    return "Incomplete";
-  }
-
-  if (tiles.length === 3) {
-    if (
-      tiles[0] === tiles[1] &&
-      tiles[1] === tiles[2]
-    ) {
-      return "Pung";
-    }
-
-    const allSuitTiles = [
-      ...characters,
-      ...bamboo,
-      ...dots,
-    ];
-
-    const indexes = tiles
-      .map((tile) =>
-        allSuitTiles.indexOf(tile)
-      )
-      .sort((a, b) => a - b);
-
-    if (
-      indexes.every(
-        (index) => index !== -1
-      ) &&
-      indexes[1] === indexes[0] + 1 &&
-      indexes[2] === indexes[1] + 1
-    ) {
-      return "Chow";
-    }
-  }
-
-  if (tiles.length === 4) {
-    if (
-      tiles.every(
-        (tile) => tile === tiles[0]
-      )
-    ) {
-      return "Kong";
-    }
-  }
-
-    return "Incomplete";
-}
-
-function normalizeTiles(
-  tiles: string[]
-) {
-  if (
-    detectMeldType(tiles) !== "Chow"
-  ) {
-    return tiles;
-  }
-
-  const allSuitTiles = [
-    ...characters,
-    ...bamboo,
-    ...dots,
-  ];
-
-  return [...tiles].sort(
-    (a, b) =>
-      allSuitTiles.indexOf(a) -
-      allSuitTiles.indexOf(b)
-  );
-}
-
-function addTile(tile: string) {
-  setSelectedTiles((current) => {
-    if (current.length >= maxTiles) {
-      return current;
-    }
-
-    return [...current, tile];
-  });
-}
-function undoLastTile() {
-  setSelectedTiles((current) =>
-    current.slice(0, -1)
-  );
-}
-
-  function renderTiles(
-    sectionTitle: string,
-    tiles: string[]
-  ) {
-    return (
-      <div className="mb-6">
-        <h3 className="mb-2 font-semibold">
-          {sectionTitle}
-        </h3>
-
-        <div className="grid grid-cols-4 gap-2">
-          {tiles.map((tile) => {
-
-            return (
-              <button
-                key={tile}
-                onClick={() =>
-  addTile(tile)
-}
-                className="h-16 rounded-xl border bg-white text-4xl"
-              >
-                {tile}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
+const [localTiles, setLocalTiles] = useState(tiles);
+const [localSource, setLocalSource] = useState(source);
 
   return (
-    <div className="rounded-lg border bg-white p-6 shadow">
-    
-
-      <div className="mb-6">
-        <h3 className="mb-2 font-semibold">
-          Selected Tiles
-        </h3>
-
-        <div className="min-h-[60px] text-5xl">
-          {selectedTiles.join(" ")}
-        </div>
-<p className="mt-2 text-sm text-gray-500">
-  {selectedTiles.length}/{maxTiles} tiles selected
-</p>
-<div className="mt-4">
-  <p className="mb-2 font-semibold">
-  Method
-</p>
-
-  <label className="block">
-  <input
-    type="radio"
-    checked={source === "self-draw"}
-    onChange={() =>
-      setSource("self-draw")
-    }
-  />
-  {" "}Self-Draw
-</label>
-
-  {sourceOptions.map((option) => (
-  <label
-    key={option}
-    className="block"
-  >
-    <input
-      type="radio"
-      checked={source === option}
-      onChange={() =>
-        setSource(option)
-      }
-    />
-    {" "}Claimed from {option}
-  </label>
-))}
-</div>
-
-        <div className="mt-3 flex gap-2">
-  <button
-    onClick={undoLastTile}
-    className="rounded border px-3 py-1 text-sm"
-  >
-    Undo Last
-  </button>
-
-  <button
-    onClick={() =>
-      setSelectedTiles([])
-    }
-    className="rounded border px-3 py-1 text-sm"
-  >
-    Clear
-  </button>
-
-  <button
-  disabled={
-    (maxTiles === 4 &&
-      selectedTiles.length < 3) ||
-    (maxTiles !== 4 &&
-      selectedTiles.length !== maxTiles)
-  }
-  onClick={() =>
-    onSave(
-  normalizeTiles(
-    selectedTiles
-  ),
-  source
-)
-  }
-  className="rounded border px-3 py-1 text-sm disabled:opacity-50"
+    <>
+      {/* Header — ‹ · Editing · Meld N · Save (matches Concept 09) */}
+      <div className="mb-3 flex items-center justify-between">
+        <button
+  type="button"
+  onClick={onCancel}
+  aria-label="Back"
+  className={`${TAP} flex h-[34px] w-[34px] items-center justify-center rounded-xl border border-mj-line bg-mj-card text-[17px] text-mj-green`}
 >
-  Save
+  ‹
 </button>
-</div>
+        <span className="font-display text-lg font-bold text-mj-green">Editing · {title}</span>
+        <button
+  type="button"
+  onClick={() =>
+    onSave(localTiles, localSource)
+  }className={`${TAP} bg-transparent text-[13px] font-extrabold text-mj-pos`}>Save</button>
       </div>
 
-      {availableTiles ? (
-  renderTiles(
-    "Possible Winning Tiles",
-    [...new Set(availableTiles)]
-  )
-) : (
-  <>
-    {renderTiles(
-      "Characters",
-      characters
-    )}
+      {/* Selected-tiles counter */}
+      <div className="mb-2 text-[11px] font-extrabold uppercase tracking-[0.12em] text-mj-gold">Selected Tiles · {localTiles.length} / {max}</div>
 
-    {renderTiles(
-      "Bamboo",
-      bamboo
-    )}
+      {/* Tray — tap a chosen tile to remove */}
+      <div className="mb-3.5 flex min-h-[60px] flex-wrap items-center gap-1.5 rounded-2xl border border-dashed border-[#d3cab3] bg-mj-card p-2.5">
+        {localTiles.length ? (
+          <>
+            {localTiles.map((t, i) => (
+  <MahjongTile
+    key={i}
+    char={t}
+    size="md"
+    onClick={() =>
+      setLocalTiles(
+        localTiles.filter((_, idx) => idx !== i)
+      )
+    }
+  />
+))}
+            <span className="ml-1 text-xs text-mj-muted">Tap to remove</span>
+          </>
+        ) : (
+          <span className="pl-1 text-xs text-mj-muted">Select tiles below</span>
+        )}
+      </div>
 
-    {renderTiles(
-      "Dots",
-      dots
-    )}
+      {/* Method (melds only — pair carries no claim) */}
+      {showMethod && (
+        <Card className="mb-3.5 p-3.5">
+          <div className="mb-2.5 text-sm font-extrabold">Method</div>
+          <div className="flex flex-wrap gap-2">
+            <SegButton active={localSource === "self-draw"}
+onClick={() => setLocalSource("self-draw")} className="rounded-[10px] px-3.5 py-2.5 text-xs">Self-Draw</SegButton>
+            {others.map((name) => (
+              <SegButton
+  key={name}
+  active={localSource === name}
+onClick={() => setLocalSource(name)}
+  className="rounded-[10px] px-3.5 py-2.5 text-xs"
+>
+  Claimed from {name}
+</SegButton>
+            ))}
+          </div>
+        </Card>
+      )}
 
-    {renderTiles(
-      "Winds",
-      winds
-    )}
-
-    {renderTiles(
-      "Dragons",
-      dragons
-    )}
-  </>
-)}
-    </div>
+      <Card className="p-3.5"><TilePalette
+  onPick={(tile) => {
+    if (localTiles.length < max) {
+      setLocalTiles([...localTiles, tile]);
+    }
+  }}
+/></Card>
+    </>
   );
 }
+
+export default MeldEditor;
