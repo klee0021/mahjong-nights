@@ -238,7 +238,7 @@ function Face({ char }: { char: string }): React.ReactElement {
   if (i >= 0)
     return (
       <span style={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: 1 }}>
-        <span style={{ color: C.ink, fontWeight: 700, fontSize: 11, marginBottom: 1 }}>{HAN[i]}</span>
+        <span style={{ color: C.ink, fontWeight: 700, fontSize: 11, marginBottom: 2 }}>{HAN[i]}</span>
         <span style={{ color: C.red, fontWeight: 800, fontSize: 14 }}>萬</span>
       </span>
     );
@@ -343,4 +343,3 @@ export function TileRow({
 }
 
 export default MahjongTile;
-
