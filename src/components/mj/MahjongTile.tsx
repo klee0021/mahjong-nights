@@ -197,9 +197,9 @@ function Bamboo({ n }: { n: number }) {
   if (n === 1) return <span style={gridWrap("1fr / 1fr")}><Bird /></span>;
   const grid = BAM_GRID[n];
   const red = BAM_RED[n] ?? [];
-  // Stalk height derived from row count (concept: 15 for 2-row, 13 for 3-row).
+  // Stalk height derived from row count (concept: 15 for 2-row, 11 for 3-row).
   // A single rule by rows — never per-number — so 7/8/9 fit like the rest.
-  const h = rowCount(grid.tmpl) === 3 ? 13 : 15;
+  const h = rowCount(grid.tmpl) === 3 ? 11 : 15;
   return (
     <span style={gridWrap(grid.tmpl, grid.rel)}>
       {Array.from({ length: n }, (_, i) => {
