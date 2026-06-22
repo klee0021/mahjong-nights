@@ -221,9 +221,9 @@ function Sakura({ tint, label }: { tint: "pink" | "green"; label?: string }) {
   return (
     <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
       {label && (
-        <span style={{ position: "absolute", top: 3, left: 4, fontWeight: 800, fontSize: 7.5, lineHeight: 1, color: tint === "pink" ? C.red : C.green }}>{label}</span>
+        <span style={{ position: "absolute", top: 3, left: 4, fontWeight: 800, fontSize: 7.5, lineHeight: 1, color: tint === "pink" ? C.red : C.greenDragon }}>{label}</span>
       )}
-      <svg width={30} height={30} viewBox="0.5 0.5 23 23" aria-hidden style={{ display: "block" }}>
+      <svg width={25} height={25} viewBox="0.5 0.5 23 23" aria-hidden style={{ display: "block", overflow: "visible" }}>
         <g fill={fill} stroke={stroke} strokeWidth={0.8}>{[0, 72, 144, 216, 288].map(petal)}</g>
         <circle cx={12} cy={12} r={2.3} fill="#ecc84a" stroke="#d9a93a" strokeWidth={0.7} />
       </svg>
