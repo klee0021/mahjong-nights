@@ -341,3 +341,6 @@ export function TileRow({
     </span>
   );
 }
+
+export default MahjongTile;
+
