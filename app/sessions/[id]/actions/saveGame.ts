@@ -54,7 +54,7 @@ export async function saveGame({
 }
 
 revalidateTag("home", "max");
-revalidateTag("players", "max");
+revalidateTag("players");
 revalidateTag("sessions", "max");
 revalidateTag(`session-${sessionId}`, "max");
 revalidateTag(`history-${sessionId}`, "max");
