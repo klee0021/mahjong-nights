@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button, TAP } from "./primitives";
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -15,14 +15,52 @@ export function TapButton({
   custom = false,
   ...props
 }: Props) {
-  const [pressed, setPressed] = useState(false);
+const [pressed, setPressed] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handlers = {
-    onPointerDown: () => setPressed(true),
-    onPointerUp: () => setPressed(false),
-    onPointerCancel: () => setPressed(false),
-    onPointerLeave: () => setPressed(false),
-  };
+ const handlers = {
+  onTouchStart: () => {
+    timerRef.current = setTimeout(() => {
+      setPressed(true);
+    }, 50);
+  },
+
+  onTouchMove: () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    setPressed(false);
+  },
+
+  onTouchEnd: () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    setPressed(false);
+  },
+
+  onTouchCancel: () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    setPressed(false);
+  },
+
+  onMouseDown: () => {
+    setPressed(true);
+  },
+
+  onMouseUp: () => {
+    setPressed(false);
+  },
+
+  onMouseLeave: () => {
+    setPressed(false);
+  },
+};
 
   return (
     <div

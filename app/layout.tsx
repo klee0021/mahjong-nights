@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ScrollToTop from "@/src/components/ScrollToTop";
 
 export const metadata: Metadata = {
   title: "Mahjong Nights",
@@ -13,7 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+  <ScrollToTop />
+  {children}
+</body>
     </html>
   );
 }
