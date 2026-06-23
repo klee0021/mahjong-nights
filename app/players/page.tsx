@@ -8,9 +8,14 @@ import { TapCard } from "@/src/components/ui/TapCard";
 import { TapButton } from "@/src/components/ui/TapButton";
 
 export default async function PlayersPage() {
-  import { getPlayers } from "@/src/lib/cache/players";
+  const { data } = await supabase
+  .from("players")
+  .select("*")
+  .order("total_score", {
+    ascending: false,
+  });
 
-const players = (await getPlayers()) as Player[];
+const players = (data ?? []) as Player[];
 
   return (
     <AppShell active="players">
