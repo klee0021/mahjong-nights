@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { supabase } from "@/src/lib/supabase";
 
 export async function updateGame({
@@ -61,8 +61,9 @@ export async function updateGame({
   );
 }
 
-  revalidatePath("/");
-  revalidatePath("/players");
-  revalidatePath(`/sessions/${sessionId}`);
-  revalidatePath(`/sessions/${sessionId}/history`);
+  revalidateTag("home");
+revalidateTag("players");
+revalidateTag("sessions");
+revalidateTag(`session-${sessionId}`);
+revalidateTag(`history-${sessionId}`);
 }

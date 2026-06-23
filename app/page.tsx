@@ -7,8 +7,6 @@ import type { Player, SessionSummary, Standing } from "@/src/lib/types";
 import HomeSessionCard from "@/src/components/HomeSessionCard";
 import HomeCreateSessionButton from "@/src/components/HomeCreateSessionButton";
 
-export const revalidate = 30;
-
 /* ---- Presentational view (props-driven) ---- */
 export function HomeView({ openSessions, leaderboard }: { openSessions: SessionSummary[]; leaderboard: Standing[] }) {
   return (

@@ -6,8 +6,6 @@ import SessionRow from "@/src/components/SessionRow";
 import { addSession } from "./actions/addSession";
 import type { SessionSummary } from "@/src/lib/types";
 
-export const revalidate = 30;
-
 export function SessionsView({ open, closed }: { open: SessionSummary[]; closed: SessionSummary[] }) {
   return (
     <AppShell active="sessions">

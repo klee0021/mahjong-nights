@@ -12,8 +12,6 @@ import DeleteSessionButton from "@/src/components/DeleteSessionButton";
 import InlineRenameSession from "./InlineRenameSession";
 import type { Standing } from "@/src/lib/types";
 
-export const dynamic = "force-dynamic";
-
 export function SessionDashboardView({
   id,
   name,

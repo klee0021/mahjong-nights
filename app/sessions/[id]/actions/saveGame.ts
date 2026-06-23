@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { supabase } from "@/src/lib/supabase";
 import type { Standing } from "@/src/lib/types";
 
@@ -53,7 +53,9 @@ export async function saveGame({
   );
 }
 
-revalidatePath("/");
-revalidatePath("/players");
-revalidatePath(`/sessions/${sessionId}`);
+revalidateTag("home");
+revalidateTag("players");
+revalidateTag("sessions");
+revalidateTag(`session-${sessionId}`);
+revalidateTag(`history-${sessionId}`);
 }

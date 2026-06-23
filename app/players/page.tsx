@@ -7,15 +7,10 @@ import type { Player } from "@/src/lib/types";
 import { TapCard } from "@/src/components/ui/TapCard";
 import { TapButton } from "@/src/components/ui/TapButton";
 
-export const revalidate = 3600;
-
 export default async function PlayersPage() {
-  const { data } = await supabase
-    .from("players")
-    .select("*")
-    .order("total_score", { ascending: false });
+  import { getPlayers } from "@/src/lib/cache/players";
 
-  const players = (data ?? []) as Player[];
+const players = (await getPlayers()) as Player[];
 
   return (
     <AppShell active="players">
