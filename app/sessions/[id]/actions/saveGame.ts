@@ -53,9 +53,9 @@ export async function saveGame({
   );
 }
 
-revalidateTag("home");
-revalidateTag("players");
-revalidateTag("sessions");
-revalidateTag(`session-${sessionId}`);
-revalidateTag(`history-${sessionId}`);
+revalidateTag("home", "max");
+revalidateTag("players", "max");
+revalidateTag("sessions", "max");
+revalidateTag(`session-${sessionId}`, "max");
+revalidateTag(`history-${sessionId}`, "max");
 }
