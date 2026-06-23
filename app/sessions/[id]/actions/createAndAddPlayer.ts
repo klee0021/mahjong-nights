@@ -43,6 +43,34 @@ export async function createAndAddPlayer(
     return;
   }
 
+const { data: session } =
+  await supabase
+    .from("sessions")
+    .select("participant_count, leaderboard")
+    .eq("id", sessionId)
+    .single();
+
+const leaderboard =
+  (session?.leaderboard as any[]) ?? [];
+
+leaderboard.push({
+  name: player.name,
+  points: 0,
+});
+
+leaderboard.sort(
+  (a, b) => b.points - a.points
+);
+
+await supabase
+  .from("sessions")
+  .update({
+    participant_count:
+      (session?.participant_count ?? 0) + 1,
+    leaderboard,
+  })
+  .eq("id", sessionId);
+
   revalidatePath("/");
   revalidatePath("/players");
   revalidatePath("/sessions");

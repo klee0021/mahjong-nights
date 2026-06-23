@@ -1561,6 +1561,13 @@ onCancel={() => {
             meld3Source,
             meld4Source,
             pairSource,
+allTiles: [
+  ...meld1Tiles,
+  ...meld2Tiles,
+  ...meld3Tiles,
+  ...meld4Tiles,
+  ...pairTiles,
+],
           },
         };
 

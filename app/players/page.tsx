@@ -2,13 +2,12 @@ import { supabase } from "@/src/lib/supabase";
 import { AppShell } from "@/src/components/ui/AppShell";
 import { Medal, ScoreValue, Button } from "@/src/components/ui/primitives";
 import { addPlayer } from "./actions/addPlayer";
-import { recalculateStats } from "./actions/recalculateStats";
 import PlayersView from "./PlayersView";
 import type { Player } from "@/src/lib/types";
 import { TapCard } from "@/src/components/ui/TapCard";
 import { TapButton } from "@/src/components/ui/TapButton";
 
-export const revalidate = 30;
+export const revalidate = 3600;
 
 export default async function PlayersPage() {
   const { data } = await supabase
@@ -25,11 +24,6 @@ export default async function PlayersPage() {
           Players
         </h1>
 
-        <form action={recalculateStats}>
-  <TapCard className="rounded-2xl border border-mj-line bg-mj-card px-3 py-2 text-xs font-bold text-mj-green text-center">
-    ↻ Recalculate
-  </TapCard>
-</form>
       </div>
 
       <form

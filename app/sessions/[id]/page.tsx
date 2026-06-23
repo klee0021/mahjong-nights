@@ -6,8 +6,6 @@ import { TapButton } from "@/src/components/ui/TapButton";
 import { Leaderboard } from "@/src/components/ui/Leaderboard";
 import { MahjongTile } from "@/src/components/mj/MahjongTile";
 import { endSession } from "./actions/endSession";
-import { addParticipant } from "./actions/addParticipant";
-import { removeParticipant } from "./actions/removeParticipant";
 import { renameSession } from "./actions/renameSession";
 import { deleteSession } from "./actions/deleteSession";
 import DeleteSessionButton from "@/src/components/DeleteSessionButton";
@@ -21,23 +19,15 @@ export function SessionDashboardView({
   name,
   isActive,
   participantCount,
-participantList,
-players,
-playersWhoPlayed,
-addParticipantAction,
-hands,
-standings
+  hands,
+  standings,
 }: {
   id: string;
   name: string;
   isActive: boolean;
   participantCount: number;
-  participantList: any[];
-players: any[];
-playersWhoPlayed: Set<string>;
-addParticipantAction: any;
-hands: number;
-standings: Standing[];
+  hands: number;
+  standings: Standing[];
 }) {
   return (
     <AppShell>
@@ -106,49 +96,26 @@ standings: Standing[];
 
 export default async function SessionPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-const addParticipantWithSession =
-  addParticipant.bind(null, id);
-  const { data: session } = await supabase.from("sessions").select("*").eq("id", id).single();
-const { data: players } = await supabase
-  .from("players")
+ const { data: session } = await supabase
+  .from("sessions")
   .select("*")
-  .order("name");
-  const { data: participants } = await supabase
-  .from("session_players")
-  .select(`
-    player_id,
-    players (
-      id,
-      name
-    )
-  `)
-  .eq("session_id", id);
-  const { data: games } = await supabase.from("games").select("hand_data").eq("session_id", id);
-
-  const totals: Record<string, number> = {};
-  (participants ?? []).forEach((p: any) => { totals[p.players.name] = 0; });
-  (games ?? []).forEach((g: any) => (g.hand_data?.settlement ?? []).forEach((e: any) => { totals[e.player] = (totals[e.player] ?? 0) + e.points; }));
-  const standings: Standing[] = Object.entries(totals).map(([name, points]) => ({ name, points })).sort((a, b) => b.points - a.points);
-const playersWhoPlayed = new Set<string>();
-
-(games ?? []).forEach((g: any) => {
-  (g.hand_data?.settlement ?? []).forEach((e: any) => {
-    playersWhoPlayed.add(e.player);
-  });
-});
-
+  .eq("id", id)
+  .single();
+  const standings: Standing[] =
+  session?.leaderboard ?? [];
   return (
   <SessionDashboardView
-    id={id}
-    name={session?.name ?? ""}
-    isActive={!!session?.is_active}
-    participantCount={participants?.length ?? 0}
-    participantList={participants ?? []}
-players={players ?? []}
-playersWhoPlayed={playersWhoPlayed}
-addParticipantAction={addParticipantWithSession}
-hands={games?.length ?? 0}
-    standings={standings}
-  />
+  id={id}
+  name={session?.name ?? ""}
+  isActive={!!session?.is_active}
+  participantCount={
+  session?.participant_count ?? 0
+}
+
+hands={
+  session?.hands_played ?? 0
+}
+  standings={standings}
+/>
 );
 }

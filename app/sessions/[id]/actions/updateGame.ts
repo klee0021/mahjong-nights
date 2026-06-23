@@ -30,14 +30,18 @@ export async function updateGame({
   const result =
     await supabase
       .from("games")
-      .update({
-        score,
-        flowers,
-        kongs,
-        win_type: winType,
-        discarder_id: discarderId,
-        hand_data: handData,
-      })
+     .update({
+  score,
+  flowers,
+  kongs,
+  winner_name:
+    handData.settlement.find(
+      (e: any) => e.points > 0
+    )?.player,
+  win_type: winType,
+  discarder_id: discarderId,
+  hand_data: handData,
+})
       .eq("id", gameId)
       .select();
 
@@ -46,18 +50,19 @@ export async function updateGame({
     result
   );
 
-  if (result.error) {
-    throw new Error(
-      result.error.message
-    );
-  }
+ if (result.error) {
+  console.error(
+    "UPDATE ERROR:",
+    result.error
+  );
+
+  throw new Error(
+    result.error.message
+  );
+}
 
   revalidatePath("/");
   revalidatePath("/players");
-  revalidatePath(
-    `/sessions/${sessionId}`
-  );
-  revalidatePath(
-    `/sessions/${sessionId}/history`
-  );
+  revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath(`/sessions/${sessionId}/history`);
 }

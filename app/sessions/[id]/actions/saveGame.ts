@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { supabase } from "@/src/lib/supabase";
+import type { Standing } from "@/src/lib/types";
 
 type SaveGameInput = {
   sessionId: string;
@@ -29,6 +30,10 @@ export async function saveGame({
     .insert({
   session_id: sessionId,
   winner_id: winnerId,
+  winner_name:
+    handData.settlement.find(
+      (e: any) => e.points > 0
+    )?.player,
   win_type: winType,
   discarder_id: discarderId,
   flowers,
@@ -46,45 +51,6 @@ export async function saveGame({
   throw new Error(
     error.message
   );
-}
-const settlement =
-  handData.settlement ?? [];
-
-for (const result of settlement) {
-  const { data: player } =
-    await supabase
-      .from("players")
-      .select("*")
-      .eq("name", result.player)
-      .single();
-
-  if (!player) continue;
-
-  await supabase
-    .from("players")
-    .update({
-      total_score:
-        (player.total_score ?? 0) +
-        result.points,
-    })
-    .eq("id", player.id);
-}
-
-const { data: winner } =
-  await supabase
-    .from("players")
-    .select("*")
-    .eq("id", winnerId)
-    .single();
-
-if (winner) {
-  await supabase
-    .from("players")
-    .update({
-      wins:
-        (winner.wins ?? 0) + 1,
-    })
-    .eq("id", winnerId);
 }
 
 revalidatePath("/");

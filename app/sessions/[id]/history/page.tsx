@@ -86,14 +86,31 @@ export function HandHistoryView({ sessionId, name, games }: { sessionId: string;
 
 export default async function HistoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { data: session } = await supabase.from("sessions").select("name").eq("id", id).single();
-  const { data: games } = await supabase.from("games").select("*, players:winner_id ( name )").eq("session_id", id).order("created_at", { ascending: false });
+  const [
+  { data: session },
+  { data: games },
+] = await Promise.all([
+  supabase
+    .from("sessions")
+    .select("name")
+    .eq("id", id)
+    .single(),
+
+  supabase
+    .from("games")
+    .select("*")
+    .eq("session_id", id)
+    .order("created_at", {
+      ascending: false,
+    }),
+]);
   const total = games?.length ?? 0;
   const records: GameRecord[] = (games ?? []).map((g: any, idx: number) => ({
-    id: g.id, index: total - idx, winner: g.players?.name ?? g.winner_id,
-    win_type: g.hand_data?.winType === "self-draw" ? "self-draw" : "claimed",
+    id: g.id, index: total - idx, winner: g.winner_name,
+    win_type: g.win_type,
     discarder: g.hand_data?.discarder, score: g.score,
-    tiles: [...(g.hand_data?.meld1Tiles ?? []), ...(g.hand_data?.meld2Tiles ?? []), ...(g.hand_data?.meld3Tiles ?? []), ...(g.hand_data?.meld4Tiles ?? []), ...(g.hand_data?.pairTiles ?? [])],
+    tiles:
+  g.hand_data?.allTiles ?? [],
     settlement: g.hand_data?.settlement ?? [],
   }));
   return <HandHistoryView sessionId={id} name={session?.name ?? "Session"} games={records} />;
