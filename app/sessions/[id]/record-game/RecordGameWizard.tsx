@@ -134,9 +134,7 @@ const router = useRouter();
 const [step, setStep] = useState(
   initialGame ? 3 : 1
 );
-useEffect(() => {
-  window.scrollTo(0, 0);
-}, [step]);
+
 const [isSaving, setIsSaving] =
   useState(false);
 
@@ -168,6 +166,12 @@ null,
 const [pair] = useState(null);
 const [editingSection, setEditingSection] =
   useState<string | null>(null);
+useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: "instant",
+  });
+}, [step, editingSection]);
 
 const [meld1Tiles, setMeld1Tiles] =
   useState<string[]>(

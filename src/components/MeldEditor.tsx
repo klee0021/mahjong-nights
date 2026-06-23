@@ -53,7 +53,7 @@ const [localSource, setLocalSource] = useState(source);
 >
   ‹
 </button>
-        <span className="font-display text-lg font-bold text-mj-green">Editing · {title}</span>
+        <span className="font-display text-lg font-bold text-mj-green">{title}</span>
         <button
   type="button"
   onClick={() =>
@@ -65,14 +65,14 @@ const [localSource, setLocalSource] = useState(source);
       <div className="mb-2 text-[11px] font-extrabold uppercase tracking-[0.12em] text-mj-gold">Selected Tiles · {localTiles.length} / {max}</div>
 
       {/* Tray — tap a chosen tile to remove */}
-      <div className="mb-3.5 flex min-h-[60px] flex-wrap items-center gap-1.5 rounded-2xl border border-dashed border-[#d3cab3] bg-mj-card p-2.5">
+      <div className="mb-3.5 flex min-h-[77px] flex-wrap items-center gap-2.5 rounded-2xl border border-dashed border-[#d3cab3] bg-mj-card p-2.5">
         {localTiles.length ? (
           <>
             {localTiles.map((t, i) => (
   <MahjongTile
     key={i}
     char={t}
-    size="md"
+    size="lg"
     onClick={() =>
       setLocalTiles(
         localTiles.filter((_, idx) => idx !== i)

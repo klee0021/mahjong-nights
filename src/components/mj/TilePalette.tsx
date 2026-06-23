@@ -50,12 +50,12 @@ export function TilePalette({
             {section.title}
           </div>
 
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2.5">
             {section.tiles.map((tile) => (
               <MahjongTile
                 key={tile}
                 char={tile}
-                size="md"
+                size="lg"
                 onClick={() => onPick(tile)}
               />
             ))}
