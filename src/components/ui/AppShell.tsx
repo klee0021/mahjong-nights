@@ -12,13 +12,20 @@ export function AppShell({ active, children }: { active?: "home" | "players" | "
     <div className="min-h-screen bg-mj-paper">
       <header className="sticky top-0 z-10 border-b border-mj-line bg-mj-paper/95 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
-          <Link href="/" className="flex items-center gap-2.5">
+          <Link
+  href="/"
+  prefetch={false}
+  className="flex items-center gap-2.5"
+>
             <MahjongTile char="🀄" size="sm" />
             <span className="font-display text-[17px] font-bold uppercase leading-[0.95] text-mj-green">Mahjong<br />Nights</span>
           </Link>
           <nav className="flex gap-1.5">
             {NAV.map((n) => (
-              <Link key={n.key} href={n.href}
+              <Link
+  key={n.key}
+  href={n.href}
+  prefetch={false}
                 className={`rounded-xl px-3 py-2 text-[13px] font-bold ${active === n.key ? "bg-mj-greensoft text-mj-green" : "text-mj-muted hover:text-mj-ink"}`}>
                 {n.label}
               </Link>
