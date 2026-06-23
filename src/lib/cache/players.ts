@@ -12,7 +12,7 @@ export const getPlayers = unstable_cache(
 
     return data ?? [];
   },
-  ["players"],
+  undefined,
   {
     tags: ["players"],
   }
