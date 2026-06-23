@@ -52,3 +52,4 @@ redirect(
   `/sessions/${sessionId}/history`
 
 );
+}
