@@ -38,8 +38,17 @@ export async function deleteGame(
   }
 
     revalidateTag("home", "max");
+
 revalidateTag("players", "max");
+
 revalidateTag("sessions", "max");
+
 revalidateTag(`session-${sessionId}`, "max");
+
 revalidateTag(`history-${sessionId}`, "max");
-}
+
+redirect(
+
+  `/sessions/${sessionId}/history`
+
+);
