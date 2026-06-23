@@ -49,7 +49,6 @@ export async function deleteGame(
     `/sessions/${sessionId}/history`,
     "page"
   );
-
   redirect(
     `/sessions/${sessionId}/history`
   );
