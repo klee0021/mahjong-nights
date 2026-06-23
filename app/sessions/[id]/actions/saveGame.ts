@@ -54,7 +54,7 @@ export async function saveGame({
 }
 
 revalidatePath("/");
-revalidatePath(
-  `/sessions/${sessionId}`
+revalidatePath("/players");
+revalidatePath(`/sessions/${sessionId}`
 );
 }
