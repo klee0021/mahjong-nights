@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { supabase } from "@/src/lib/supabase";
 
@@ -37,19 +37,9 @@ export async function deleteGame(
     );
   }
 
-    revalidateTag("home", "max");
-
-revalidateTag("players", "max");
-
-revalidateTag("sessions", "max");
-
-revalidateTag(`session-${sessionId}`, "max");
-
-revalidateTag(`history-${sessionId}`, "max");
-
-redirect(
-
-  `/sessions/${sessionId}/history`
-
-);
+revalidatePath("/");
+revalidatePath("/players");
+revalidatePath("/sessions");
+revalidatePath(`/sessions/${sessionId}`);
+revalidatePath(`/sessions/${sessionId}/history`);
 }
