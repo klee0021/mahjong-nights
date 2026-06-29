@@ -98,102 +98,113 @@ const sortedParticipants = [...(participants ?? [])].sort(
               {participant.players?.name}
             </span>
 
-            {playersWhoPlayed.has(
-              participant.players?.name
-            ) ? (
-              <span className="rounded-full bg-[#efece1] px-3 py-1 text-xs font-bold text-mj-muted">
-                Locked
-              </span>
-            ) : (
-              <form
-                action={removeParticipant.bind(
-                  null,
-                  id,
-                  participant.player_id
-                )}
-              >
-                <button
-                  type="submit"
-                  className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-mj-line text-[#a89f8a] hover:text-mj-neg"
-                >
-                  ✕
-                </button>
-              </form>
-            )}
+            {session?.is_active &&
+  (playersWhoPlayed.has(
+    participant.players?.name
+  ) ? (
+    <span className="rounded-full bg-[#efece1] px-3 py-1 text-xs font-bold text-mj-muted">
+      Locked
+    </span>
+  ) : (
+    <form
+      action={removeParticipant.bind(
+        null,
+        id,
+        participant.player_id
+      )}
+    >
+      <button
+        type="submit"
+        className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-mj-line text-[#a89f8a] hover:text-mj-neg"
+      >
+        ✕
+      </button>
+    </form>
+  ))}
           </li>
         )
       )}
     </ul>
   ) : (
     <p className="px-4 py-5 text-center text-sm text-mj-muted">
-      No players yet — add some below.
-    </p>
+  {session?.is_active
+    ? "No players yet — add some below."
+    : "No players were added to this session."}
+</p>
   )}
 </Card>
 
-<div className="mb-2">
-  <SectionLabel>Add New Player</SectionLabel>
-</div>
+{session?.is_active && (
+  <>
+    <div className="mb-2">
+      <SectionLabel>Add New Player</SectionLabel>
+    </div>
 
-<form
-  action={createAndAddPlayerWithSession}
-  className="mb-6 flex gap-2.5"
->
-  <input
-    name="name"
-    placeholder="Player name"
-    className="flex-1 rounded-2xl border border-mj-line bg-mj-card px-3.5 py-3 text-sm outline-none focus:border-mj-green"
-  />
+    <form
+      action={createAndAddPlayerWithSession}
+      className="mb-6 flex gap-2.5"
+    >
+      <input
+        name="name"
+        placeholder="Player name"
+        className="flex-1 rounded-2xl border border-mj-line bg-mj-card px-3.5 py-3 text-sm outline-none focus:border-mj-green"
+      />
 
-  <TapButton
-    type="submit"
-    className="px-4 py-3"
-  >
-    Add
-  </TapButton>
-</form>
+      <TapButton
+        type="submit"
+        className="px-4 py-3"
+      >
+        Add
+      </TapButton>
+    </form>
+  </>
+)}
 
-<div className="mb-2">
-  <SectionLabel>Add Existing Player</SectionLabel>
-</div>
+{session?.is_active && (
+  <>
+    <div className="mb-2">
+      <SectionLabel>Add Existing Player</SectionLabel>
+    </div>
 
-<form
-  action={addParticipantWithSession}
-  className="mb-6 flex gap-2.5"
->
-  <select
-    name="playerId"
-    className="flex-1 rounded-2xl border border-mj-line bg-mj-card px-3.5 py-3 text-sm"
-  >
-    <option value="">
-      Select Player
-    </option>
-
-    {players
-      ?.filter(
-        (player: any) =>
-          !participants?.some(
-            (participant: any) =>
-              participant.player_id === player.id
-          )
-      )
-      .map((player: any) => (
-        <option
-          key={player.id}
-          value={player.id}
-        >
-          {player.name}
+    <form
+      action={addParticipantWithSession}
+      className="mb-6 flex gap-2.5"
+    >
+      <select
+        name="playerId"
+        className="flex-1 rounded-2xl border border-mj-line bg-mj-card px-3.5 py-3 text-sm"
+      >
+        <option value="">
+          Select Player
         </option>
-      ))}
-  </select>
 
-  <TapButton
-    type="submit"
-    className="px-4 py-3"
-  >
-    Add
-  </TapButton>
-</form>
+        {players
+          ?.filter(
+            (player: any) =>
+              !participants?.some(
+                (participant: any) =>
+                  participant.player_id === player.id
+              )
+          )
+          .map((player: any) => (
+            <option
+              key={player.id}
+              value={player.id}
+            >
+              {player.name}
+            </option>
+          ))}
+      </select>
+
+      <TapButton
+        type="submit"
+        className="px-4 py-3"
+      >
+        Add
+      </TapButton>
+    </form>
+  </>
+)}
 
     </AppShell>
   );
