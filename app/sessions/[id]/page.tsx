@@ -40,7 +40,7 @@ export function SessionDashboardView({
       <Card className="mb-4">
         <PanelHeader>Session Overview</PanelHeader>
         <div className="flex divide-x divide-mj-line/70">
-          <div className="flex-1 p-4 text-center"><div className="font-display text-3xl font-bold leading-none">{participantCount}</div><div className="mt-1 text-xs font-semibold text-mj-muted">Participants</div></div>
+          <div className="flex-1 p-4 text-center"><div className="font-display text-3xl font-bold leading-none">{participantCount}</div><div className="mt-1 text-xs font-semibold text-mj-muted">Players</div></div>
           <div className="flex-1 p-4 text-center"><div className="font-display text-3xl font-bold leading-none">{hands}</div><div className="mt-1 text-xs font-semibold text-mj-muted">Hands Played</div></div>
         </div>
       </Card>
