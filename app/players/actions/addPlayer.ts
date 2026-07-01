@@ -19,5 +19,7 @@ export async function addPlayer(formData: FormData) {
     return;
   }
 
-  revalidatePath("/players");
+  revalidatePath("/");
+revalidatePath("/players");
+revalidatePath("/sessions");
 }
