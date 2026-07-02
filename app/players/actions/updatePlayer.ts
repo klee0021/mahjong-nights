@@ -33,8 +33,8 @@ export async function updatePlayer(
     .eq("id", playerId);
 
   const { data: games } = await supabase
-    .from("games")
-    .select("id, hand_data");
+  .from("games")
+  .select("id, winner_name, hand_data");
 
   for (const game of games ?? []) {
     const handData = game.hand_data ?? {};
@@ -69,11 +69,15 @@ export async function updatePlayer(
       });
 
     await supabase
-      .from("games")
-      .update({
-        hand_data: handData,
-      })
-      .eq("id", game.id);
+  .from("games")
+  .update({
+    winner_name:
+      game.winner_name === oldName
+        ? newName
+        : game.winner_name,
+    hand_data: handData,
+  })
+  .eq("id", game.id);
   }
 
   const { data: sessions } = await supabase
