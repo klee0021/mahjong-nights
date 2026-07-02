@@ -76,5 +76,36 @@ export async function updatePlayer(
       .eq("id", game.id);
   }
 
-  await recalculateStats();
+  const { data: sessions } = await supabase
+  .from("sessions")
+  .select("id, leaderboard");
+
+for (const session of sessions ?? []) {
+  const leaderboard = session.leaderboard ?? [];
+
+  let changed = false;
+
+  const updatedLeaderboard = leaderboard.map((row: any) => {
+    if (row.name === oldName) {
+      changed = true;
+
+      return {
+        ...row,
+        name: newName,
+      };
+    }
+
+    return row;
+  });
+
+  if (changed) {
+    await supabase
+      .from("sessions")
+      .update({
+        leaderboard: updatedLeaderboard,
+      })
+      .eq("id", session.id);
+  }
+}
+await recalculateStats();
 }
