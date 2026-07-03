@@ -412,6 +412,38 @@ const allPungs =
   ["Pung", "Kong"].includes(
     detectMeldType(meld4Tiles)
   );
+const dragonWindTiles = [
+  "🀀", // East
+  "🀁", // South
+  "🀂", // West
+  "🀃", // North
+  "🀄", // Red Dragon
+  "🀅", // Green Dragon
+  "🀆", // White Dragon
+];
+
+const meldGroups = [
+  meld1Tiles,
+  meld2Tiles,
+  meld3Tiles,
+  meld4Tiles,
+];
+
+const hasDragonOrWindGroup =
+  meldGroups.some((meld) => {
+    const type = detectMeldType(meld);
+
+    return (
+      ["Pung", "Kong"].includes(type) &&
+      meld.length > 0 &&
+      dragonWindTiles.includes(meld[0])
+    );
+  }) ||
+  (
+    pairTiles.length === 2 &&
+    pairTiles[0] === pairTiles[1] &&
+    dragonWindTiles.includes(pairTiles[0])
+  );
 const allTiles = [
   ...meld1Tiles,
   ...meld2Tiles,
@@ -506,10 +538,18 @@ if (
 } else if (
   allPungs &&
   !oneSuit &&
-  hasHonors
+  hasDragonOrWindGroup
 ) {
   scoringCategory =
     "All Pungs + Dragons/Directionals";
+
+  categoryMultiplier = 2;
+} else if (
+  allPungs &&
+  !oneSuit
+) {
+  scoringCategory =
+    "All Pungs";
 
   categoryMultiplier = 2;
 }
