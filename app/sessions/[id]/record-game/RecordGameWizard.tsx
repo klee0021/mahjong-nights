@@ -1586,18 +1586,19 @@ onCancel={() => {
           kongs: result.kongCount,
           score: result.handValue,
           handData: {
-            flowers,
-            kongCount: result.kongCount,
-            subtotal: result.subtotal,
-            categoryMultiplier: result.multiplier,
-            scoringCategory: result.category,
-            handValue: result.handValue,
-            winType,
-            discarder,
-            participants:
-              selectedParticipants.map(
-                (p) => p.players.name
-              ),
+  flowers,
+  kongCount: result.kongCount,
+  subtotal: result.subtotal,
+  categoryMultiplier: result.multiplier,
+  scoringCategory: result.category,
+  handValue: result.handValue,
+  winType,
+  discarder,
+  penaltyPayer,
+  participants:
+    selectedParticipants.map(
+      (p) => p.players.name
+    ),
             settlement: result.settlement,
             meld1Tiles,
             meld2Tiles,

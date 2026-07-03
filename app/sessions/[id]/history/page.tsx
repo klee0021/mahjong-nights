@@ -47,10 +47,30 @@ function HandCard({ sessionId, g }: { sessionId: string; g: GameRecord }) {
       </div>
       <div className="p-3.5">
         <div className="mb-5 flex gap-8">
-          <Field label="Winner" value={g.winner} />
-          <Field label="Winning Tile" value={g.win_type === "self-draw" ? "Self Draw" : `From ${g.discarder}`} />
-          <Field label="Points" value={`+${g.score}`} valueClass="text-mj-neg" />
-        </div>
+  <Field label="Winner" value={g.winner} />
+
+  <Field
+    label="Winning Tile"
+    value={
+      g.win_type === "self-draw"
+        ? "Self Draw"
+        : `From ${g.discarder}`
+    }
+  />
+
+  {g.feeder && (
+    <Field
+  label="Feeder"
+  value={g.feeder}
+/>
+  )}
+
+  <Field
+    label="Points"
+    value={`+${g.score}`}
+    valueClass="text-mj-neg"
+  />
+</div>
         <TileRow
   tiles={g.tiles}
   size="sm"
@@ -106,9 +126,13 @@ export default async function HistoryPage({ params }: { params: Promise<{ id: st
 ]);
   const total = games?.length ?? 0;
   const records: GameRecord[] = (games ?? []).map((g: any, idx: number) => ({
-    id: g.id, index: total - idx, winner: g.winner_name,
-    win_type: g.win_type,
-    discarder: g.hand_data?.discarder, score: g.score,
+  id: g.id,
+  index: total - idx,
+  winner: g.winner_name,
+  win_type: g.win_type,
+  discarder: g.hand_data?.discarder,
+  feeder: g.hand_data?.penaltyPayer ?? null,
+  score: g.score,
     tiles:
   g.hand_data?.allTiles ?? [],
     settlement: g.hand_data?.settlement ?? [],

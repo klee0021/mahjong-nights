@@ -15,6 +15,7 @@ export type GameRecord = {
   winner: string;
   win_type: WinType;
   discarder?: string | null;
+  feeder?: string | null;
   score: number;                 // hand value
   tiles: string[];               // 14 unicode tiles (meld1..4 + pair)
   settlement: SettlementEntry[];
