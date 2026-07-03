@@ -630,54 +630,56 @@ const penaltyPayer =
 
 const settlement =
   penaltyPayer
-    ? [
-        {
-          player: winnerName,
-          points: handValue,
-        },
-        ...otherPlayers.map(
-          (player) => ({
-            player:
-              player.players.name,
+    ? winType === "self-draw"
+      ? [
+          {
+            player: winnerName,
+            points: handValue * 3,
+          },
+          ...otherPlayers.map((player) => ({
+            player: player.players.name,
             points:
-              player.players.name ===
-              penaltyPayer
+              player.players.name === penaltyPayer
+                ? -(handValue * 3)
+                : 0,
+          })),
+        ]
+      : [
+          {
+            player: winnerName,
+            points: handValue,
+          },
+          ...otherPlayers.map((player) => ({
+            player: player.players.name,
+            points:
+              player.players.name === penaltyPayer
                 ? -handValue
                 : 0,
-          })
-        ),
-      ]
+          })),
+        ]
     : winType === "self-draw"
     ? [
         {
           player: winnerName,
-          points:
-            handValue * 3,
+          points: handValue * 3,
         },
-        ...otherPlayers.map(
-          (player) => ({
-            player:
-              player.players.name,
-            points: -handValue,
-          })
-        ),
+        ...otherPlayers.map((player) => ({
+          player: player.players.name,
+          points: -handValue,
+        })),
       ]
     : [
         {
           player: winnerName,
           points: handValue,
         },
-        ...otherPlayers.map(
-          (player) => ({
-            player:
-              player.players.name,
-            points:
-              player.players.name ===
-              discarder
-                ? -handValue
-                : 0,
-          })
-        ),
+        ...otherPlayers.map((player) => ({
+          player: player.players.name,
+          points:
+            player.players.name === discarder
+              ? -handValue
+              : 0,
+        })),
       ];
 
 const result = {
@@ -1298,8 +1300,10 @@ return (
         </div>
 
         <div className="text-xs text-mj-muted">
-          All opponents pay
-        </div>
+  {penaltyPayer
+    ? `${penaltyPayer} pays feeding penalty`
+    : "All opponents pay"}
+</div>
       </div>
     </OptionButton>
 
@@ -1337,8 +1341,12 @@ return (
             </div>
 
             <div className="text-xs text-mj-muted">
-              {player.players.name} pays
-            </div>
+  {penaltyPayer
+    ? player.players.name === penaltyPayer
+      ? `${penaltyPayer} pays`
+      : `${penaltyPayer} pays feeding penalty`
+    : `${player.players.name} pays`}
+</div>
           </div>
         </OptionButton>
       );
