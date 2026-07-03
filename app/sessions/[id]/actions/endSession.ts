@@ -14,7 +14,8 @@ export async function endSession(
     .eq("id", sessionId);
 
   revalidatePath("/");
-  revalidatePath(
-    `/sessions/${sessionId}`
-  );
+revalidatePath("/sessions");
+revalidatePath(
+  `/sessions/${sessionId}`
+);
 }
