@@ -26,11 +26,13 @@ export function PlayerDetailView({
   stats,
   recent,
   playerId,
+  played,
 }: {
   player: Player;
   stats: PlayerStats;
   recent: SessionSummary[];
   playerId: string;
+  played: number;
 }) {
   return (
     <AppShell active="players">
@@ -74,8 +76,7 @@ export function PlayerDetailView({
           )) : <li className="py-4 text-sm text-mj-muted">No sessions played yet.</li>}
         </ul>
       </Card>
-      {player.wins === 0 &&
-        player.total_score === 0 && (
+      {played === 0 && (
           <form
             action={deletePlayer.bind(
               null,
@@ -144,10 +145,11 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
   const recent = (sessions ?? []).slice(-5).reverse().map((s: any) => s.sessions) as SessionSummary[];
   return (
   <PlayerDetailView
-    player={player as Player}
-    stats={stats}
-    recent={recent}
-    playerId={id}
-  />
+  player={player as Player}
+  stats={stats}
+  recent={recent}
+  playerId={id}
+  played={played}
+/>
 );
 }
