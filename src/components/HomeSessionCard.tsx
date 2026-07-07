@@ -17,7 +17,7 @@ export default function HomeSessionCard({
       onClick={() =>
         router.push(`/sessions/${session.id}`)
       }
-      className="rounded-2xl border border-mj-line bg-mj-paper px-3.5 py-3 hover:bg-mj-greensoft/40"
+      className="rounded-2xl border border-mj-line bg-mj-paper px-3.5 py-3"
     >
       <div className="flex items-center gap-3">
         <MahjongTile

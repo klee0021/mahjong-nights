@@ -17,7 +17,7 @@ export default function SessionRow({
       onClick={() =>
         router.push(`/sessions/${s.id}`)
       }
-      className="flex items-center gap-3 rounded-2xl border border-mj-line bg-mj-card px-3.5 py-3.5 hover:bg-mj-paper"
+      className="flex items-center gap-3 rounded-2xl border border-mj-line bg-mj-card px-3.5 py-3.5"
     >
       <MahjongTile
         char={(s as any).tile ?? "🀄"}

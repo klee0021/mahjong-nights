@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { saveGame } from "../actions/saveGame";
 import { updateGame } from "../actions/updateGame";
@@ -125,6 +125,50 @@ const Line = ({
     </span>
   </div>
 );
+function CameraBadge({
+  onClick,
+}: {
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label="Take or upload a photo of the hand"
+      onClick={onClick}
+      className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[11px] border border-[#c7ddcf] bg-mj-greensoft"
+    >
+      <svg
+        width="17"
+        height="17"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden
+      >
+        <path
+          d="M4 8.5C4 7.67157 4.67157 7 5.5 7H8L9.1 5.35C9.42 4.87 9.96 4.58 10.54 4.58H13.46C14.04 4.58 14.58 4.87 14.9 5.35L16 7H18.5C19.3284 7 20 7.67157 20 8.5V17.5C20 18.3284 19.3284 19 18.5 19H5.5C4.67157 19 4 18.3284 4 17.5V8.5Z"
+          stroke="#184a35"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+
+        <circle
+          cx="12"
+          cy="13"
+          r="3.2"
+          stroke="#184a35"
+          strokeWidth="1.6"
+        />
+
+        <circle
+          cx="16.6"
+          cy="9.7"
+          r="0.9"
+          fill="#184a35"
+        />
+      </svg>
+    </button>
+  );
+}
 export default function RecordGameWizard({
   sessionId,
   participants,
@@ -252,7 +296,20 @@ const [discarder, setDiscarder] =
     initialGame?.hand_data
       ?.discarder ?? ""
   );
+const fileInputRef =
+  useRef<HTMLInputElement>(null);
 
+function handlePhotoSelected(
+  event: React.ChangeEvent<HTMLInputElement>
+) {
+  const file = event.target.files?.[0];
+
+  if (!file) return;
+
+  console.log(file);
+
+  // AI recognition will go here later.
+}
 function togglePlayer(playerId: string) {
 setSelectedPlayers((current) => {
 if (current.includes(playerId)) {
@@ -947,7 +1004,8 @@ return (
 </div>
   </div>
 
-  <div className="mt-2 text-right">
+  <div className="mt-2 flex items-center gap-3">
+  <div className="text-right">
     <div className="text-xs text-mj-muted">
       Winner
     </div>
@@ -956,6 +1014,22 @@ return (
       {winnerName}
     </div>
   </div>
+
+  <CameraBadge
+    onClick={() =>
+      fileInputRef.current?.click()
+    }
+  />
+
+  <input
+    ref={fileInputRef}
+    type="file"
+    accept="image/*"
+    capture="environment"
+    className="hidden"
+    onChange={handlePhotoSelected}
+  />
+</div>
 </div>
 
 

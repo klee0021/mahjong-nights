@@ -45,18 +45,18 @@ export function BouncyButton({
   }
 
   const styles: Record<
-    BtnVariant,
-    string
-  > = {
-    primary:
-      "bg-mj-green text-[#f4efe2] shadow-[0_12px_24px_-12px_rgba(24,74,53,.7)] hover:brightness-110",
-    danger:
-      "bg-mj-neg text-[#fdeeec] shadow-[0_12px_24px_-12px_rgba(203,58,44,.7)] hover:brightness-110",
-    secondary:
-      "bg-mj-card border border-mj-line text-mj-green hover:bg-mj-paper",
-    ghost:
-      "bg-transparent text-mj-muted hover:text-mj-ink",
-  };
+  BtnVariant,
+  string
+> = {
+  primary:
+    "bg-mj-green text-[#f4efe2] shadow-[0_12px_24px_-12px_rgba(24,74,53,.7)]",
+  danger:
+    "bg-mj-neg text-[#fdeeec] shadow-[0_12px_24px_-12px_rgba(203,58,44,.7)]",
+  secondary:
+    "bg-mj-card border border-mj-line text-mj-green",
+  ghost:
+    "bg-transparent text-mj-muted",
+};
 
   return (
     <button
