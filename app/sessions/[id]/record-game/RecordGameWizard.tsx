@@ -1265,15 +1265,17 @@ return (
   onClick={() => setEditingSection("pair")}
 >
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm font-extrabold">
-          Pair
-        </span>
+        <div className="flex items-center gap-2">
+  <span className="text-sm font-extrabold">
+  Pair
+</span>
+</div>
 
         {pairTiles.length > 0 && (
   <button
     type="button"
     onClick={() => setEditingSection("pair")}
-    className="mt-1 text-xs text-mj-muted"
+    className="text-xs text-mj-muted"
   >
     {pairSource === "self-draw"
       ? "Self-Draw"
