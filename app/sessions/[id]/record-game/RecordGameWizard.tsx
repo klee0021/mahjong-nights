@@ -182,6 +182,9 @@ const [step, setStep] = useState(
 const [isSaving, setIsSaving] =
   useState(false);
 
+const [isReadingHand, setIsReadingHand] =
+  useState(false);
+
 const [selectedPlayers, setSelectedPlayers] =
   useState<string[]>(
     initialGame
@@ -299,17 +302,50 @@ const [discarder, setDiscarder] =
 const fileInputRef =
   useRef<HTMLInputElement>(null);
 
-function handlePhotoSelected(
+async function handlePhotoSelected(
   event: React.ChangeEvent<HTMLInputElement>
 ) {
   const file = event.target.files?.[0];
 
   if (!file) return;
 
-  console.log(file);
+  setIsReadingHand(true);
 
-  // AI recognition will go here later.
+  try {
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    const response = await fetch(
+      "/api/read-hand",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+
+    setMeld1Tiles(data.meld1);
+    setMeld2Tiles(data.meld2);
+    setMeld3Tiles(data.meld3);
+    setMeld4Tiles(data.meld4);
+    setPairTiles(data.pair);
+
+    // Require the user to confirm the source
+    setMeld1Source("");
+    setMeld2Source("");
+    setMeld3Source("");
+    setMeld4Source("");
+    setPairSource("");
+  } catch (error) {
+    console.error(error);
+    alert("Unable to read hand.");
+  } finally {
+    setIsReadingHand(false);
+    event.target.value = "";
+  }
 }
+
 function togglePlayer(playerId: string) {
 setSelectedPlayers((current) => {
 if (current.includes(playerId)) {
@@ -1064,9 +1100,15 @@ return (
   <button
     type="button"
     onClick={() => setEditingSection("meld1")}
-    className="mt-1 text-xs text-mj-muted"
+    className={`text-xs ${
+  meld1Source === ""
+    ? "text-red-600"
+    : "text-mj-muted"
+}`}
   >
-    {meld1Source === "self-draw"
+    {meld1Source === ""
+      ? "Source Required"
+      : meld1Source === "self-draw"
       ? "Self-Draw"
       : `Claimed from ${meld1Source}`}
   </button>
@@ -1120,9 +1162,15 @@ return (
   <button
     type="button"
     onClick={() => setEditingSection("meld2")}
-    className="mt-1 text-xs text-mj-muted"
+    className={`text-xs ${
+  meld2Source === ""
+    ? "text-red-600"
+    : "text-mj-muted"
+}`}
   >
-    {meld2Source === "self-draw"
+    {meld2Source === ""
+      ? "Source Required"
+      : meld2Source === "self-draw"
       ? "Self-Draw"
       : `Claimed from ${meld2Source}`}
   </button>
@@ -1175,9 +1223,15 @@ return (
   <button
     type="button"
     onClick={() => setEditingSection("meld3")}
-    className="mt-1 text-xs text-mj-muted"
+    className={`text-xs ${
+  meld3Source === ""
+    ? "text-red-600"
+    : "text-mj-muted"
+}`}
   >
-    {meld3Source === "self-draw"
+    {meld3Source === ""
+      ? "Source Required"
+      : meld3Source === "self-draw"
       ? "Self-Draw"
       : `Claimed from ${meld3Source}`}
   </button>
@@ -1232,9 +1286,15 @@ return (
   <button
     type="button"
     onClick={() => setEditingSection("meld4")}
-    className="mt-1 text-xs text-mj-muted"
+    className={`text-xs ${
+  meld4Source === ""
+    ? "text-red-600"
+    : "text-mj-muted"
+}`}
   >
-    {meld4Source === "self-draw"
+    {meld4Source === ""
+      ? "Source Required"
+      : meld4Source === "self-draw"
       ? "Self-Draw"
       : `Claimed from ${meld4Source}`}
   </button>
@@ -1275,9 +1335,15 @@ return (
   <button
     type="button"
     onClick={() => setEditingSection("pair")}
-    className="text-xs text-mj-muted"
+    className={`text-xs ${
+      pairSource === ""
+        ? "text-red-600"
+        : "text-mj-muted"
+    }`}
   >
-    {pairSource === "self-draw"
+    {pairSource === ""
+      ? "Source Required"
+      : pairSource === "self-draw"
       ? "Self-Draw"
       : `Claimed from ${pairSource}`}
   </button>
@@ -1733,7 +1799,26 @@ allTiles: [
   </BouncyButton>
 </div>
         </>
+            )}
+
+      {isReadingHand && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 backdrop-blur-sm">
+          <div className="rounded-3xl bg-white px-8 py-7 shadow-xl">
+
+            <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-mj-line border-t-mj-green" />
+
+            <div className="text-center font-extrabold text-mj-green">
+              Reading hand...
+            </div>
+
+            <div className="mt-1 text-center text-sm text-mj-muted">
+              Identifying tiles and melds
+            </div>
+
+          </div>
+        </div>
       )}
+
     </div>
   );
 }
