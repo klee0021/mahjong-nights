@@ -588,7 +588,7 @@ const hasHonors =
     honorTiles.includes(tile)
   );
 let scoringCategory =
-  "No Category Detected";
+  "Chicken Hand";
 
 let categoryMultiplier = 1;
 
