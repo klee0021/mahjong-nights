@@ -138,10 +138,12 @@ Output only JSON.
             {
   type: "input_image",
   image_url: `data:image/jpeg;base64,${base64}`,
+  detail: "high",
 },
 {
   type: "input_image",
   image_url: `data:image/jpeg;base64,${enhancedBase64}`,
+  detail: "high",
 },
           ],
         },
