@@ -39,7 +39,7 @@ title,
 }: MeldEditorProps) {
 
 const [localTiles, setLocalTiles] = useState(tiles);
-const [localSource, setLocalSource] = useState(source);
+const [localSource, setLocalSource] = useState<string>(source ?? "");
 
   return (
     <>
@@ -56,9 +56,16 @@ const [localSource, setLocalSource] = useState(source);
         <span className="font-display text-lg font-bold text-mj-green">{title}</span>
         <button
   type="button"
-  onClick={() =>
-    onSave(localTiles, localSource)
-  }className={`${TAP} bg-transparent text-[13px] font-extrabold text-mj-pos`}>Save</button>
+  disabled={showMethod && localSource === ""}
+  onClick={() => onSave(localTiles, localSource)}
+  className={`${TAP} bg-transparent text-[13px] font-extrabold ${
+    showMethod && localSource === ""
+      ? "text-mj-muted opacity-50"
+      : "text-mj-pos"
+  }`}
+>
+  Save
+</button>
       </div>
 
       {/* Selected-tiles counter */}

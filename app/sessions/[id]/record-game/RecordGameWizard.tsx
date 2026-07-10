@@ -245,38 +245,28 @@ const [meld4Tiles, setMeld4Tiles] =
   );
 
 const [meld1Source, setMeld1Source] =
-  useState(
-    initialGame?.hand_data
-      ?.meld1Source ??
-      "self-draw"
+  useState<string>(
+    initialGame?.hand_data?.meld1Source ?? ""
   );
 
 const [meld2Source, setMeld2Source] =
-  useState(
-    initialGame?.hand_data
-      ?.meld2Source ??
-      "self-draw"
+  useState<string>(
+    initialGame?.hand_data?.meld2Source ?? ""
   );
 
 const [meld3Source, setMeld3Source] =
-  useState(
-    initialGame?.hand_data
-      ?.meld3Source ??
-      "self-draw"
+  useState<string>(
+    initialGame?.hand_data?.meld3Source ?? ""
   );
 
 const [meld4Source, setMeld4Source] =
-  useState(
-    initialGame?.hand_data
-      ?.meld4Source ??
-      "self-draw"
+  useState<string>(
+    initialGame?.hand_data?.meld4Source ?? ""
   );
 
 const [pairSource, setPairSource] =
-  useState(
-    initialGame?.hand_data
-      ?.pairSource ??
-      "self-draw"
+  useState<string>(
+    initialGame?.hand_data?.pairSource ?? ""
   );
 
 const [pairTiles, setPairTiles] =
@@ -287,11 +277,9 @@ const [pairTiles, setPairTiles] =
 
 const [winType, setWinType] =
   useState<
-    "self-draw" | "claimed"
+    "" | "self-draw" | "claimed"
   >(
-    initialGame?.hand_data
-      ?.winType ??
-      "self-draw"
+    initialGame?.hand_data?.winType ?? ""
   );
 
 const [discarder, setDiscarder] =
@@ -483,14 +471,24 @@ const pairValid =
 
 const winningMethodValid =
   winType === "self-draw" ||
-  discarder !== "";
+  (
+    winType === "claimed" &&
+    discarder !== ""
+  );
 
+const sourcesValid =
+  meld1Source !== "" &&
+  meld2Source !== "" &&
+  meld3Source !== "" &&
+  meld4Source !== "" &&
+  pairSource !== "";
 const handValid =
   meld1Valid &&
   meld2Valid &&
   meld3Valid &&
   meld4Valid &&
   pairValid &&
+  sourcesValid &&
   winningMethodValid;
 const allPungs =
   ["Pung", "Kong"].includes(
