@@ -876,7 +876,7 @@ function setCurrentSource(
 }
 
 return (
-  <div className="mx-auto max-w-3xl px-4 pb-24 pt-4">
+  <div className="mx-auto max-w-3xl pb-24">
 
     <div className="mb-3 flex items-center justify-between">
       <h1 className="font-display text-lg font-bold text-mj-green">

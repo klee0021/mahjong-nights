@@ -28,7 +28,7 @@ export function SessionDashboardView({
   standings: Standing[];
 }) {
   return (
-    <AppShell>
+    <AppShell active="sessions">
       <Link href="/sessions" className="mb-3 inline-flex items-center gap-1 text-[13px] font-bold text-mj-muted">‹ Sessions</Link>
       <div className="mb-4">
   <InlineRenameSession

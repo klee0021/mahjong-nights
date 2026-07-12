@@ -90,7 +90,7 @@ function HandCard({ sessionId, g }: { sessionId: string; g: GameRecord }) {
 
 export function HandHistoryView({ sessionId, name, games }: { sessionId: string; name: string; games: GameRecord[] }) {
   return (
-    <AppShell>
+    <AppShell active="sessions">
       <Link href={`/sessions/${sessionId}`} className="mb-3 inline-flex items-center gap-1 text-[13px] font-bold text-mj-muted">‹ {name}</Link>
       <div className="relative mb-4 text-center">
         <Sparkle className="absolute left-10 top-1.5" size={12} /><Sparkle className="absolute right-10 top-1.5" size={12} />

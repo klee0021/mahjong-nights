@@ -1,4 +1,5 @@
 import { supabase } from "@/src/lib/supabase";
+import { AppShell } from "@/src/components/ui/AppShell";
 import RecordGameWizard from "./RecordGameWizard";
 
 export default async function RecordGamePage({
@@ -21,9 +22,11 @@ export default async function RecordGamePage({
       .eq("session_id", id);
 
   return (
-    <RecordGameWizard
-  sessionId={id}
-  participants={(participants as any) || []}
-/>
+    <AppShell active="sessions">
+      <RecordGameWizard
+        sessionId={id}
+        participants={(participants as any) || []}
+      />
+    </AppShell>
   );
 }

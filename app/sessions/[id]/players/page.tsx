@@ -67,7 +67,7 @@ const sortedParticipants = [...(participants ?? [])].sort(
   });
 
   return (
-    <AppShell>
+    <AppShell active="sessions">
       <Link
         href={`/sessions/${id}`}
         className="mb-3 inline-flex items-center gap-1 text-[13px] font-bold text-mj-muted"
