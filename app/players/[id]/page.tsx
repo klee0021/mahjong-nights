@@ -71,7 +71,11 @@ export function PlayerDetailView({
   size="sm"
 />
               <Link href={`/sessions/${s.id}`} className="flex-1 text-sm font-bold hover:underline">{s.name}</Link>
-              <span className="text-xs text-mj-muted">{new Date(s.created_at).toLocaleDateString("en-GB")}</span>
+              <span className="text-xs text-mj-muted">
+  {new Date(s.created_at).toLocaleDateString("en-AU", {
+    timeZone: "Australia/Melbourne",
+  })}
+</span>
             </li>
           )) : <li className="py-4 text-sm text-mj-muted">No sessions played yet.</li>}
         </ul>
@@ -142,7 +146,14 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
     win_rate: played ? ((wins / played) * 100).toFixed(1) : "0.0",
     avg_win_hand: won?.length ? (won.reduce((t, g: any) => t + (g.score ?? 0), 0) / won.length).toFixed(1) : "0.0",
   };
-  const recent = (sessions ?? []).slice(-5).reverse().map((s: any) => s.sessions) as SessionSummary[];
+  const recent = (sessions ?? [])
+  .map((s: any) => s.sessions)
+  .sort(
+    (a: any, b: any) =>
+      new Date(b.created_at).getTime() -
+      new Date(a.created_at).getTime()
+  )
+  .slice(0, 5) as SessionSummary[];
   return (
   <PlayerDetailView
   player={player as Player}
